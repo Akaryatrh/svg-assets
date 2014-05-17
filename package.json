@@ -1,0 +1,14 @@
+{
+    "name": "svgAssets",
+    "description": "Replace any <svga>file</svga> tags with related files",
+    "version": "0.0.1",
+    "author": "Sébastien Van Eyck",
+    "homepage": "https://github.com/Akaryatrh/svgAssets",
+    "bugs": "https://github.com/Akaryatrh/svgAssets/issues",
+    "keywords": [ "svg", "replace", "files" ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Akaryatrh/svgAssets"
+    },
+    "main": "svg-assets"
+}
