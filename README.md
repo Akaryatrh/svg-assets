@@ -56,7 +56,7 @@ If not defined, the **root directory** of your project will be used, except if `
 **Option format:** `string` or `Array`
 
 Defines what kind of template files svgAssets will look for.
-If not defined, the following extensions will be used : `.html`, `.htm`, `.hbs`, `.handlebars`
+If not defined, the following extensions will be used : `html`, `htm`, `hbs`, `handlebars`
 
 ---
 
@@ -65,7 +65,7 @@ If not defined, the following extensions will be used : `.html`, `.htm`, `.hbs`,
 **Option format:** `string` or `Array`
 
 Defines what kind of assets files svgAssets will look for.
-If not defined, the following extension will be used : `.svg`
+If not defined, the following extension will be used : `svg`
 
 
 ---

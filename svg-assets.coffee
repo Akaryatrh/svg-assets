@@ -36,8 +36,12 @@ module.exports = class SvgAssets
 
 
 		#Check validity of specific options towards default ones
-		checkOptionsWithDefaults = (options) =>
+		checkOptionsWithDefaults = (options, acceptAny) =>
 			switch
+				# is a string and accept any value
+				when typeof @options[options] is 'string' and acceptAny
+				then [@options[options]]
+
 				# is a string and part of authorized values
 				when typeof @options[options] is 'string' and
 				defaultOptions[options].indexOf(@options[options]) > -1
@@ -47,6 +51,10 @@ module.exports = class SvgAssets
 				when typeof @options[options] is 'string' and
 				defaultOptions[options].indexOf(@options[options]) is -1
 				then returnOptionsAndWarning options
+
+				# is a an array and accept any values
+				when Array.isArray(@options[options]) and acceptAny
+				then @options[options]
 
 				# is a an array but no values part of authorized values
 				when Array.isArray(@options[options]) and
@@ -73,8 +81,8 @@ module.exports = class SvgAssets
 
 
 		@options.logLevels = checkOptionsWithDefaults 'logLevels'
-		@options.templatesExt = checkOptionsWithDefaults 'templatesExt'
-		@options.assetsExt = checkOptionsWithDefaults 'assetsExt'
+		@options.templatesExt = checkOptionsWithDefaults 'templatesExt', true
+		@options.assetsExt = checkOptionsWithDefaults 'assetsExt', true
 		# deactivated for now @options.matchTags = checkOptionsWithDefaults 'matchTags'
 		@options.preserveRoot ?= defaultOptions.preserveRoot
 
