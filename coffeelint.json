@@ -1,0 +1,35 @@
+{
+  "no_tabs" : {
+    "level" : "ignore"
+  },
+
+  "no_trailing_whitespace" : {
+    "level" : "error"
+  },
+
+  "max_line_length" : {
+    "value": 120,
+    "level" : "error"
+  },
+
+  "camel_case_classes" : {
+    "level" : "error"
+  },
+
+  "indentation" : {
+    "level" : "ignore"
+  },
+
+  "no_implicit_braces" : {
+    "level" : "ignore"
+  },
+
+  "no_trailing_semicolons" : {
+    "level" : "error"
+  },
+
+  "no_throwing_strings" : {
+    "level" : "error"
+  }
+
+}
