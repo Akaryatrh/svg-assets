@@ -49,7 +49,7 @@ module.exports = class OptionsManager
 
 
 	#Check validity of specific options towards default ones
-	checkOptionsWithDefaults : (options, acceptAny) =>
+	checkOptionsWithDefaults : (options, acceptAny) ->
 		switch
 			# is a string and accept any value
 			when typeof shared.options[options] is 'string' and acceptAny
@@ -88,6 +88,6 @@ module.exports = class OptionsManager
 		check
 
 	# Warn and return defaults options
-	returnOptionsAndWarning : (options) =>
+	returnOptionsAndWarning : (options) ->
 		shared.logs.warnings.push "Wrong #{ options } options -> default ones will be used instead"
 		shared.defaultOptions[options]
