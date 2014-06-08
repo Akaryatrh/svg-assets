@@ -14,7 +14,8 @@ module.exports = class Logger
 
 		# Regular log
 		if shared.logs.process.filesLength > 0
-			shared.logs.infos.push "#{ shared.logs.process.tags } <svga> tags have been processed in #{shared.logs.process.filesLength} files"
+			shared.logs.infos.push "#{ shared.logs.process.tags } <svga> tags have been processed
+			in #{shared.logs.process.filesLength} files"
 		else
 			shared.logs.warnings.push "No file processed :\n
 			∷    Processing could have been aborted due to wrong options definitions\n

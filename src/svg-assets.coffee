@@ -10,23 +10,22 @@ module.exports = class SvgAssets
 
 		#console.log shorthand
 		@cl = console.log
-		@optionsManager = new OptionsManager _options
-
+		@_optionsManager = new OptionsManager _options
+		@_logger = new Logger
 
 		return
 
 
 	process: ->
 
-		if @optionsManager.init()
+		if @_optionsManager.init()
 
 			allFiles = @walk shared.options.directory, shared.options.templatesExt
 			assetsFiles = @walk shared.options.assets, shared.options.assetsExt
 			for file in allFiles
 				@findAndReplace file, assetsFiles
 
-		logger = new Logger
-		logger.log()
+		@_logger.log()
 
 
 	# ReadFileSync
@@ -37,10 +36,9 @@ module.exports = class SvgAssets
 		catch err
 			# Catch file not found error
 			if err.code isnt 'ENOENT'
-				#throw e
 				shared.logs.errors.globalMessages.push err
 			else
-				response = null;
+				response = null
 
 		response
 
@@ -100,10 +98,10 @@ module.exports = class SvgAssets
 				# and extract its possible properties
 				svgTagPattern = /<svg([^>]+)>/i
 				tags = 0
-				newData = newData.replace svgTagPattern, ($0, originalProperties) =>
+				newData = newData.replace svgTagPattern, ($0, originalProperties) ->
 					# We then create a new svg tag with original properties
 					# and append possible <svga> properties
-					newString = "<svg #{ originalProperties } #{ properties } >"
+					newString = "<svg#{ originalProperties }#{ properties }>"
 					tags++
 					shared.logs.process.tags++
 					return newString
@@ -114,5 +112,9 @@ module.exports = class SvgAssets
 			# Finaly we can return the new string
 			newData
 
+
 		# Now we can write the file with its new content
-		if dataTemplate isnt res then fs.writeFileSync path, res
+		if dataTemplate isnt res
+			fs.writeFileSync path, res
+
+		res
