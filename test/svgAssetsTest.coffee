@@ -1,6 +1,5 @@
 SvgAssets = require '../src/svg-assets'
 OptionsManager = require '../src/options-manager'
-shared = require '../src/shared-objects'
 Logger = require '../src/logger'
 chai = require 'chai'
 sinon = require 'sinon'
@@ -9,12 +8,11 @@ fs = require 'fs'
 expect = chai.expect
 chai.should()
 
-svgAssets = new SvgAssets
 
 module.exports = ->
 
 
-
+	svgAssets = new SvgAssets
 
 	describe '@constructor', ->
 
@@ -38,6 +36,7 @@ module.exports = ->
 
 
 	describe '@rfs', ->
+
 
 		it 'should try to read synchronously an accessible svg file and should return its content', ->
 			mock ="""
@@ -86,15 +85,16 @@ module.exports = ->
 
 
 	describe '@findAndReplace', ->
+
 		beforeEach ->
 			#We stub the writeFileSync method
-			@wfsStub = sinon.stub(fs, "writeFileSync")
+			sinon.stub fs, "writeFileSync"
 
 		afterEach ->
 			fs.writeFileSync.restore()
 
 
-		it 'should replace a <svga> tag with an existing matching files', ->
+		it 'should replace a <svga> tag with an existing matching file', ->
 			assetsFiles = ["./test/assets/file.svg"]
 			path = './test/templates/template.html'
 			mock = """
