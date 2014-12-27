@@ -1,8 +1,12 @@
-sharedObjectsTest = require './sharedObjectsTest'
 svgAssetsTest = require './svgAssetsTest'
-
-describe 'svgAssets instance', ->
-	svgAssetsTest()
+loggerTest = require './loggerTest'
+sharedObjectsTest = require './sharedObjectsTest'
 
 describe 'share objects', ->
-	sharedObjectsTest()
+	sharedObjectsTest.run()
+
+describe 'svgAssets instance', ->
+  	svgAssetsTest.run()
+
+describe 'logger instance', ->
+	loggerTest.run()

@@ -1,17 +1,19 @@
 fs = require 'fs'
 OptionsManager = require './options-manager'
-shared = require './shared-objects'
+sharedObjects = require './shared-objects'
+shared = null
 Logger = require './logger'
 
 module.exports = class SvgAssets
 
 
-	constructor: (_options) ->
+	constructor: (@options) ->
 
 		#console.log shorthand
 		@cl = console.log
-		@_optionsManager = new OptionsManager _options
+		@_optionsManager = new OptionsManager
 		@_logger = new Logger
+		shared = new sharedObjects()
 
 		return
 
