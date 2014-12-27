@@ -9,12 +9,24 @@ expect = chai.expect
 chai.should()
 
 
-module.exports = ->
+module.exports = run: ->
 
+	svgAssets = null
 
-	svgAssets = new SvgAssets
+	getInstance = (instance) ->
+		if instance instanceof SvgAssets
+			return svgAssets
+		else
+			return new SvgAssets
+
+	beforeEach ->
+		svgAssets = getInstance svgAssets
+
+	afterEach ->
+		svgAssets = null
 
 	describe '@constructor', ->
+
 
 		it 'should have a shorthand method to console.log', ->
 			mock = console.log
@@ -98,16 +110,16 @@ module.exports = ->
 			assetsFiles = ["./test/assets/file.svg"]
 			path = './test/templates/template.html'
 			mock = """
-<!doctype html>
-<html>
-	<head>
-	</head>
-	<body>
-		<svg height="400" width="450">
-	<path id="lineAB" d="M 100 350 l 150 -300" stroke="red" stroke-width="3" fill="none" />
-</svg>
-	</body>
-</html>
+			<!doctype html>
+			<html>
+				<head>
+				</head>
+				<body>
+					<svg height="400" width="450">
+				<path id="lineAB" d="M 100 350 l 150 -300" stroke="red" stroke-width="3" fill="none" />
+			</svg>
+				</body>
+			</html>
 			"""
 			call = svgAssets.findAndReplace path, assetsFiles
 
@@ -121,3 +133,5 @@ module.exports = ->
 			originalFile = fs.readFileSync path, 'UTF-8'
 
 			expect(call).to.equal originalFile
+
+	return

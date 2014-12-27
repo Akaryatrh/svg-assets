@@ -11,8 +11,9 @@
         "url": "https://github.com/Akaryatrh/svgAssets"
     },
     "scripts": {
-        "test": "coffeelint ./**/*.coffee -r && mocha ./test --require coffee-script/register --compilers coffee:coffee-script/register -R spec",
-        "wTest": "mocha ./test --require coffee-script/register --compilers coffee:coffee-script/register -R spec --watch"
+        "test": "coffeelint ./**/*.coffee -r && mocha ./test --require coffee-script/register --compilers coffee:coffee-script/register -R spec --check-leaks",
+        "wTest": "mocha ./test --require coffee-script/register --compilers coffee:coffee-script/register -R spec --watch --check-leaks",
+        "test-debug": "mocha ./test --require coffee-script/register --compilers coffee:coffee-script/register -R spec --watch --check-leaks --debug-brk"
     },
     "main": "svg-assets",
     "dependencies": {
@@ -20,9 +21,9 @@
     },
     "devDependencies": {
         "coffee-script": "1.7.x",
-        "chai": "1.9.x",
-        "sinon": "1.10.x",
+        "coffeelint": "1.5.x",
         "mocha": "1.20.x",
-        "coffeelint": "1.5.x"
+        "chai": "1.9.x",
+        "sinon": "1.10.x"
     }
 }

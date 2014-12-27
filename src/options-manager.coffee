@@ -2,27 +2,26 @@ shared = require './shared-objects'
 
 module.exports = class OptionsManager
 
-	constructor: (_options)->
-
+	constructor: (@options)->
 		#console.log shorthand
 		@cl = console.log
-
-		# No options defined -> fallback to default ones
-		if _options
-			shared.options = _options
-		else
-			shared.options = shared.defaultOptions
-			shared.logs.warnings.push "No options found -> defaults options have been used instead"
-
-		return
 
 
 
 	init: ->
+
+		# No options defined -> fallback to default ones
+		if @options
+			shared.options = @options
+		else
+			shared.options = shared.defaultOptions
+			shared.logs.warnings.push "No options found -> defaults options have been used instead"
+
+
 		shared.options.logLevels = @checkOptionsWithDefaults 'logLevels'
 		shared.options.templatesExt = @checkOptionsWithDefaults 'templatesExt', true
 		shared.options.assetsExt = @checkOptionsWithDefaults 'assetsExt', true
-		# deactivated for now shared.options.matchTags = @checkOptionsWithDefaults 'matchTags'
+		# deactivated for now --> shared.options.matchTags = @checkOptionsWithDefaults 'matchTags'
 		shared.options.preserveRoot ?= shared.defaultOptions.preserveRoot
 
 		unless shared.options.directory
