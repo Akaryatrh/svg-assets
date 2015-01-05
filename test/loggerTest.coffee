@@ -2,6 +2,7 @@ chai = require 'chai'
 sinon = require 'sinon'
 Util = require 'util'
 Logger = require '../src/logger'
+sharedObjects = require '../src/shared-objects'
 
 expect = chai.expect
 chai.should()
@@ -41,7 +42,10 @@ module.exports = run: ->
 		replaceFunc = ->
 			return
 
+		shared = null
+
 		beforeEach ->
+			shared = new sharedObjects()
 			sinon.stub logger, 'cl', replaceFunc()
 
 		it 'should be a function', ->
@@ -54,21 +58,21 @@ module.exports = run: ->
 				No file processed :
 				\t∷ Processing could have been aborted due to wrong options definitions
 				\t∷ No <svga> tags could have been found
-				\t∷ Found <svga> tags might have not any matched files
+				\t∷ Found <svga> tags might have not matched any files
 				"""
 			]
-			returnedLogs = logger.log()
+			returnedLogs = logger.log(shared)
 			expect(returnedLogs.logs.warnings).to.deep.members warnings
 
 		it "shouldn't find any missing files", ->
 
 			missingFiles = []
-			returnedLogs = logger.log()
+			returnedLogs = logger.log(shared)
 
 			expect(returnedLogs.logs.errors.missingFiles).to.deep.equal missingFiles
 
 		it 'should have called console log', ->
-			logger.log()
+			logger.log(shared)
 			#TODO : must be fixed
 			# The test pass even if the expect returns false, but an error will be thrown
 			process.on 'exit', ->

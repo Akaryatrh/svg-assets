@@ -1,8 +1,7 @@
 fs = require 'fs'
 OptionsManager = require './options-manager'
-sharedObjects = require './shared-objects'
-shared = null
 Logger = require './logger'
+sharedObjects = require './shared-objects'
 
 module.exports = class SvgAssets
 
@@ -13,21 +12,25 @@ module.exports = class SvgAssets
 		@cl = console.log
 		@_optionsManager = new OptionsManager
 		@_logger = new Logger
-		shared = new sharedObjects()
+		@shared = new sharedObjects()
 
 		return
 
 
 	process: ->
 
-		if @_optionsManager.init()
+		initOptions = @_optionsManager.init(@options)
+		@shared = initOptions.shared
 
-			allFiles = @walk shared.options.directory, shared.options.templatesExt
-			assetsFiles = @walk shared.options.assets, shared.options.assetsExt
+		if initOptions.success
+
+
+			allFiles = @walk @shared.options.directory, @shared.options.templatesExt
+			assetsFiles = @walk @shared.options.assets, @shared.options.assetsExt
 			for file in allFiles
 				@findAndReplace file, assetsFiles
 
-		@_logger.log()
+		@_logger.log(@shared)
 
 
 	# ReadFileSync
@@ -38,7 +41,7 @@ module.exports = class SvgAssets
 		catch err
 			# Catch file not found error
 			if err.code isnt 'ENOENT'
-				shared.logs.errors.globalMessages.push err
+				@shared.logs.errors.globalMessages.push err
 			else
 				response = null
 
@@ -86,7 +89,7 @@ module.exports = class SvgAssets
 			unless newData?
 				# We then assign back the untouched <svga> tag
 				newData = originalString
-				shared.logs.errors.missingFiles.push filename
+				@shared.logs.errors.missingFiles.push filename
 
 			# File exists
 			else
@@ -100,15 +103,15 @@ module.exports = class SvgAssets
 				# and extract its possible properties
 				svgTagPattern = /<svg([^>]+)>/i
 				tags = 0
-				newData = newData.replace svgTagPattern, ($0, originalProperties) ->
+				newData = newData.replace svgTagPattern, ($0, originalProperties) =>
 					# We then create a new svg tag with original properties
 					# and append possible <svga> properties
 					newString = "<svg#{ originalProperties }#{ properties }>"
 					tags++
-					shared.logs.process.tags++
+					@shared.logs.process.tags++
 					return newString
 
-				if tags > 0 then shared.logs.process.filesLength++
+				if tags > 0 then @shared.logs.process.filesLength++
 				return newData
 
 			# Finaly we can return the new string
