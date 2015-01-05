@@ -24,6 +24,7 @@
         "coffeelint": "1.5.x",
         "mocha": "1.20.x",
         "chai": "1.9.x",
-        "sinon": "1.10.x"
+        "sinon": "1.10.x",
+        "uglify-js": "2.4.x"
     }
 }
