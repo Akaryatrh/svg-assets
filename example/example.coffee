@@ -1,4 +1,7 @@
 svgAssets = require '../src/svg-assets'
 
-test = new svgAssets
+options =
+	directory : 'example/templates'
+
+test = new svgAssets(options)
 test.process()

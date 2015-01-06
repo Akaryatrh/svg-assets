@@ -33,22 +33,24 @@ module.exports = class OptionsManager
 
 		unless @shared.options.directory
 			prefix = 'No directory specified -> '
-			if @shared.options.preserveRoot?
+			if @shared.options.preserveRoot
 				@shared.logs.errors.globalMessages.push "#{ prefix }processing aborted"
 				return retObject
 			else
 				@shared.options.directory = '.'
 				@shared.logs.warnings.push "#{prefix}the root of your project has been used to find <svga> tags"
+				retObject.success = true
 
 
 		unless @shared.options.assets
 			prefix = 'No assets folder specified -> '
-			if @shared.options.preserveRoot?
+			if @shared.options.preserveRoot
 				@shared.logs.errors.globalMessages.push "#{ prefix }processing aborted"
 				return retObject
 			else
 				@shared.options.assets = '.'
 				@shared.logs.warnings.push "#{prefix}the root of your project has been used to find matching files"
+				retObject.success = true
 
 		return retObject
 
