@@ -3,25 +3,25 @@ sharedObjects = require './shared-objects'
 module.exports = class OptionsManager
 
 	constructor: ->
-		#console.log shorthand
-		@cl = console.log
 		@logs = null
 		@shared = new sharedObjects()
+		@shared.logs = @shared.logs()
+		@shared.defaultOptions = @shared.defaultOptions()
+		@shared.options = @shared.defaultOptions
 
 
 
 	init: (options) ->
 
 		retObject =
-			success: false
+			success: true
 			shared: @shared
-
 
 		# No options defined -> fallback to default ones
 		if options
 			@shared.options = options
 		else
-			@shared.options = @shared.defaultOptions
+			@shared.options = @shared.defaultOptions()
 			@shared.logs.warnings.push "No options found -> defaults options have been used instead"
 
 
@@ -35,22 +35,22 @@ module.exports = class OptionsManager
 			prefix = 'No directory specified -> '
 			if @shared.options.preserveRoot
 				@shared.logs.errors.globalMessages.push "#{ prefix }processing aborted"
+				retObject.success = false
 				return retObject
 			else
 				@shared.options.directory = '.'
 				@shared.logs.warnings.push "#{prefix}the root of your project has been used to find <svga> tags"
-				retObject.success = true
 
 
 		unless @shared.options.assets
 			prefix = 'No assets folder specified -> '
 			if @shared.options.preserveRoot
 				@shared.logs.errors.globalMessages.push "#{ prefix }processing aborted"
+				retObject.success = false
 				return retObject
 			else
 				@shared.options.assets = '.'
 				@shared.logs.warnings.push "#{prefix}the root of your project has been used to find matching files"
-				retObject.success = true
 
 		return retObject
 
@@ -65,12 +65,12 @@ module.exports = class OptionsManager
 
 			# is a string and part of authorized values
 			when typeof @shared.options[options] is 'string' and
-			@shared.defaultOptions[options].indexOf(@shared.options[options]) > -1
+			@checkArrayMatch([@shared.options[options]], @shared.defaultOptions[options])
 			then [@shared.options[options]]
 
 			# is a string but not part of authorized values
 			when typeof @shared.options[options] is 'string' and
-			@shared.defaultOptions[options].indexOf(@shared.options[options]) is -1
+			!@checkArrayMatch(@shared.options[options], @shared.defaultOptions[options])
 			then @returnOptionsAndWarning options
 
 			# is a an array and accept any values
@@ -79,7 +79,7 @@ module.exports = class OptionsManager
 
 			# is a an array but no values part of authorized values
 			when Array.isArray(@shared.options[options]) and
-			@checkArrayMatch(@shared.options[options], @shared.defaultOptions[options]) is false
+			!@checkArrayMatch(@shared.options[options], @shared.defaultOptions[options])
 			then @returnOptionsAndWarning options
 
 			when !@shared.options[options]?

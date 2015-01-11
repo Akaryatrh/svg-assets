@@ -1,8 +1,6 @@
-module.exports =
+module.exports = class SharedObjects
 
-	->
-
-		logs :
+		logs : ->
 			errors:
 				missingFiles: []
 				globalMessages: []
@@ -13,7 +11,7 @@ module.exports =
 				filesLength: 0
 			startDate: Date.now()
 
-		defaultOptions :
+		defaultOptions : ->
 			templatesExt: ['html', 'htm', 'hbs', 'handlebars']
 			assetsExt: ['svg']
 			logLevels: ['warning', 'error', 'info']
