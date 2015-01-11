@@ -2,7 +2,6 @@ chai = require 'chai'
 sinon = require 'sinon'
 Util = require 'util'
 Logger = require '../src/logger'
-sharedObjects = require '../src/shared-objects'
 
 expect = chai.expect
 chai.should()
@@ -42,10 +41,7 @@ module.exports = run: ->
 		replaceFunc = ->
 			return
 
-		shared = null
-
 		beforeEach ->
-			shared = new sharedObjects()
 			sinon.stub logger, 'cl', replaceFunc()
 
 		it 'should be a function', ->
@@ -61,18 +57,18 @@ module.exports = run: ->
 				\t∷ Found <svga> tags might have not matched any files
 				"""
 			]
-			returnedLogs = logger.log(shared)
+			returnedLogs = logger.log()
 			expect(returnedLogs.logs.warnings).to.deep.members warnings
 
 		it "shouldn't find any missing files", ->
 
 			missingFiles = []
-			returnedLogs = logger.log(shared)
+			returnedLogs = logger.log()
 
 			expect(returnedLogs.logs.errors.missingFiles).to.deep.equal missingFiles
 
 		it 'should have called console log', ->
-			logger.log(shared)
+			logger.log()
 			#TODO : must be fixed
 			# The test pass even if the expect returns false, but an error will be thrown
 			process.on 'exit', ->
