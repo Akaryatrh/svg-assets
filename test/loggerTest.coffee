@@ -60,7 +60,7 @@ module.exports = run: ->
 			returnedLogs = logger.log()
 			expect(returnedLogs.logs.warnings).to.deep.members warnings
 
-		it "shouldn't find any missing files", ->
+		it "without options, shouldn't find any missing files", ->
 
 			missingFiles = []
 			returnedLogs = logger.log()
@@ -69,9 +69,6 @@ module.exports = run: ->
 
 		it 'should have called console log', ->
 			logger.log()
-			#TODO : must be fixed
-			# The test pass even if the expect returns false, but an error will be thrown
-			process.on 'exit', ->
-				expect(logger.cl.calledWith(sinon.match('svgAssets did its job in'))).to.equal true
+			expect(logger.cl.calledWith(sinon.match('svgAssets did its job in'))).to.equal true
 
 	return
