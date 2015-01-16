@@ -25,7 +25,7 @@ module.exports = class Logger
 		# Regular log
 		if @shared.logs.process.filesLength > 0
 			@shared.logs.infos.push """
-			#{ @shared.logs.process.tags } <svga> tags have been processed in #{@shared.logs.process.filesLength} files
+			#{ @shared.logs.process.tags } <svga> tag(s) have been processed in #{@shared.logs.process.filesLength} file(s)
 			"""
 		else
 			@shared.logs.warnings.push """
