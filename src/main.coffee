@@ -8,11 +8,13 @@ module.exports = class SvgAssets
 
 	constructor: (@options) ->
 
-		#console.log shorthand
 		@cl = console.log
 		@_optionsManager = new OptionsManager
 		@_logger = new Logger
-		@shared = new sharedObjects()
+
+		# shared instance is only used for unit testing
+		@shared = new sharedObjects
+		@shared.logs = @shared.logs()
 
 		return
 
@@ -24,9 +26,9 @@ module.exports = class SvgAssets
 
 		if initOptions.success
 
-
 			allFiles = @walk @shared.options.directory, @shared.options.templatesExt
 			assetsFiles = @walk @shared.options.assets, @shared.options.assetsExt
+
 			for file in allFiles
 				@findAndReplace file, assetsFiles
 

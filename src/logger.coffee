@@ -7,6 +7,7 @@ module.exports = class Logger
 	constructor: ->
 		@cl = console.log
 		@shared = new sharedObjects()
+		@shared.logs = @shared.logs()
 
 
 	#Date util
@@ -19,13 +20,12 @@ module.exports = class Logger
 		date = @dateNow()
 		#Log header
 		logOutput = "𝘀𝘃𝗴 𝗮𝘀𝘀𝗲𝘁𝘀 Ξ #{ date }"
-		@shared = shared
+		@shared = shared ? @shared
 
 		# Regular log
 		if @shared.logs.process.filesLength > 0
 			@shared.logs.infos.push """
-			#{ @shared.logs.process.tags } <svga> tags have been processed
-			in #{@shared.logs.process.filesLength} files
+			#{ @shared.logs.process.tags } <svga> tag(s) have been processed in #{@shared.logs.process.filesLength} file(s)
 			"""
 		else
 			@shared.logs.warnings.push """
@@ -70,11 +70,10 @@ module.exports = class Logger
 			for error in @shared.logs.errors.globalMessages
 				logOutput += errorCl('\n→ Error: ') + error
 
-		# Exec time
-		process.on "exit", =>
-			end = (Date.now() - @shared.logs.startDate) / 1000
-			logOutput += exeCl("\n→ svgAssets did its job in #{ end }ms")
-			@cl logOutput
+
+		end = (Date.now() - @shared.logs.startDate) / 1000
+		logOutput += exeCl("\n→ svgAssets did its job in #{ end }ms")
+		@cl logOutput
 
 		finalValues =
 			logOutput: logOutput
