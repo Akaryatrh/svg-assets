@@ -3,7 +3,7 @@ OptionsManager = require './options-manager'
 Logger = require './logger'
 sharedObjects = require './shared-objects'
 
-module.exports = class Main
+module.exports = class SvgAssets
 
 
 	constructor: (@options) ->

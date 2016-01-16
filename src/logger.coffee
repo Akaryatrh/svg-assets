@@ -25,8 +25,7 @@ module.exports = class Logger
 		# Regular log
 		if @shared.logs.process.filesLength > 0
 			@shared.logs.infos.push """
-			#{ @shared.logs.process.tags } <svga> tags have been processed
-			in #{@shared.logs.process.filesLength} files
+			#{ @shared.logs.process.tags } <svga> tags have been processed in #{@shared.logs.process.filesLength} files
 			"""
 		else
 			@shared.logs.warnings.push """
@@ -71,11 +70,10 @@ module.exports = class Logger
 			for error in @shared.logs.errors.globalMessages
 				logOutput += errorCl('\n→ Error: ') + error
 
-		# Exec time
-		process.on "exit", =>
-			end = (Date.now() - @shared.logs.startDate) / 1000
-			logOutput += exeCl("\n→ svgAssets did its job in #{ end }ms")
-			@cl logOutput
+
+		end = (Date.now() - @shared.logs.startDate) / 1000
+		logOutput += exeCl("\n→ svgAssets did its job in #{ end }ms")
+		@cl logOutput
 
 		finalValues =
 			logOutput: logOutput
