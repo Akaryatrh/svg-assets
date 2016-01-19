@@ -1,3 +1,5 @@
+'use strict'
+
 sharedObjects = require './shared-objects'
 
 module.exports = class OptionsManager
@@ -9,8 +11,6 @@ module.exports = class OptionsManager
 		@shared.defaultOptions = @shared.defaultOptions()
 		@shared.options = @shared.defaultOptions
 
-
-
 	init: (options) ->
 
 		retObject =
@@ -21,7 +21,7 @@ module.exports = class OptionsManager
 		if options
 			@shared.options = options
 		else
-			@shared.options = @shared.defaultOptions()
+			@shared.options = @shared.defaultOptions
 			@shared.logs.warnings.push "No options found -> defaults options have been used instead"
 
 
@@ -38,7 +38,6 @@ module.exports = class OptionsManager
 				retObject.success = false
 				return retObject
 			else
-				@shared.options.directory = '.'
 				@shared.logs.warnings.push "#{prefix}the root of your project has been used to find <svga> tags"
 
 
@@ -49,8 +48,14 @@ module.exports = class OptionsManager
 				retObject.success = false
 				return retObject
 			else
-				@shared.options.assets = '.'
 				@shared.logs.warnings.push "#{prefix}the root of your project has been used to find matching files"
+
+
+		unless @shared.options.outputDirectory
+			@shared.logs.warnings.push """
+			  No output directory specified -> template source files will be replaced
+			"""
+				
 
 		return retObject
 
