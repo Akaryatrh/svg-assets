@@ -1,3 +1,5 @@
+'use strict'
+
 fs = require 'fs'
 OptionsManager = require './options-manager'
 Logger = require './logger'
@@ -20,34 +22,44 @@ module.exports = class SvgAssets
 
 
 	process: ->
-
 		initOptions = @_optionsManager.init(@options)
 		@shared = initOptions.shared
 
 		if initOptions.success
-
 			allFiles = @walk @shared.options.directory, @shared.options.templatesExt
 			assetsFiles = @walk @shared.options.assets, @shared.options.assetsExt
 
 			for file in allFiles
 				@findAndReplace file, assetsFiles
-
 		@_logger.log(@shared)
 
 
-	# ReadFileSync
-	rfs: (path) ->
+	# ReadFileDirSync
+	rfds: (path, type) ->
 		try
-			response = fs.readFileSync path, 'UTF-8'
+			switch type
+				when 'file'
+				then response = fs.readFileSync path, 'UTF-8'
+
+				when 'folder'
+				then response = fs.readdirSync path
 
 		catch err
-			# Catch file not found error
-			if err.code isnt 'ENOENT'
-				@shared.logs.errors.globalMessages.push err
-			else
-				response = null
+			@shared.logs.errors.globalMessages.push err
+			return null
 
 		response
+
+	checkIfDir: (path) ->
+		try
+			fs.lstatSync path
+			fs.statSync(path).isDirectory()
+			true
+		catch err
+			@shared.logs.errors.globalMessages.push err
+			return
+			
+		
 
 
 	# List files recursively
@@ -56,10 +68,10 @@ module.exports = class SvgAssets
 		files = []
 		matcher = (fn) -> fn.match /// \.(#{ ext.join('|') }) ///
 
-		_walk = (dir) ->
-			unless fs.statSync(dir).isDirectory() then return files
+		_walk = (dir) =>
+			unless @checkIfDir dir then return files
 
-			fns = fs.readdirSync dir
+			fns = @rfds dir, 'folder'
 			for fn in fns
 				fn = dir + '/' + fn
 				if matcher fn then files.push fn
@@ -72,7 +84,7 @@ module.exports = class SvgAssets
 	#Find and replace <svga>
 	findAndReplace: (path, assetsFiles) ->
 
-		dataTemplate = @rfs path
+		dataTemplate = @rfds path, 'file'
 
 		# We look for the tag <svga> in template
 		# and will extract the filename and possible properties
@@ -83,7 +95,7 @@ module.exports = class SvgAssets
 				# we look for an asset with a path ending with filename
 				pattern = ///\/#{filename}\.svg$///
 				if asset.match pattern
-					newData = @rfs asset
+					newData = @rfds asset, 'file'
 					# when found, we jump off the loop
 					break
 
