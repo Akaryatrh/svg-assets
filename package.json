@@ -1,11 +1,11 @@
 {
 	"name": "svgAssets",
-	"description": "Replace any <svga>file</svga> tags with related files",
+	"description": "Replace any <svga>file</svga> tags with related svg files",
 	"version": "0.1.0",
 	"author": "Sébastien Van Eyck",
 	"homepage": "https://github.com/Akaryatrh/svgAssets",
 	"bugs": "https://github.com/Akaryatrh/svgAssets/issues",
-	"keywords": [ "svg", "replace", "files" ],
+	"keywords": [ "svg", "replace", "file" ],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Akaryatrh/svgAssets"
@@ -15,9 +15,13 @@
 		"wTest": "mocha ./test --require coffee-script/register --compilers coffee:coffee-script/register -R spec --watch --check-leaks",
 		"test-debug": "mocha ./test --require coffee-script/register --compilers coffee:coffee-script/register -R spec --watch --check-leaks --debug-brk"
 	},
-	"main": "svg-assets",
+	"main": "index.js",
+	"bin": {
+		"svg-assets": "./index.js"
+	},
 	"dependencies": {
 		"cli-color": "0.3.x",
+		"commander": "2.9.x",
 		"grunt-contrib-copy": "0.7.x",
 		"grunt-contrib-clean": "0.6.x",
 		"grunt-contrib-coffee": "0.12.x",
