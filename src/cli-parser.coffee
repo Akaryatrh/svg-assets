@@ -18,7 +18,7 @@ module.exports = class CliParser
       commander.option value.commands, value.commandDescription
     commander.parse(process.argv)
     # Output help if no options
-    if process.argv.slice(2).length is 0
+    if process.argv.slice(2).length is 0 or !commander.run
       commander.outputHelp()
     # Launch if run command found
     else if commander.run
@@ -33,6 +33,5 @@ module.exports = class CliParser
     options = {}
     for option of @shared.optionsDefinitions
       options[option] = commander[option] if commander[option]?
-    console.log options
     options
 
