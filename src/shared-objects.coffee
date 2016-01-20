@@ -22,27 +22,27 @@ module.exports = class SharedObjects
 		optionsDefinitions:
 			directory:
 				defaultValue: '.'
-				commands: '-d, --directory <path>'
+				commands: '-d, --directory [path]'
 				commandDescription: 'Set templates directory source (String)'
 			templatesExt:
 				defaultValue: ['html', 'htm', 'hbs', 'handlebars']
-				commands: '-t, --templates-ext <list>'
+				commands: '-t, --templates-ext [list]'
 				commandDescription: 'Set templates authorized extensions (Array or String)'
 			outputDirectory:
 				defaultValue: null
-				commands: '-o, --output-directory <path>'
+				commands: '-o, --output-directory [path]'
 				commandDescription: 'Set templates directory destination (String)'
 			assets:
 				defaultValue: '.'
-				commands: '-a, --assets <path>'
+				commands: '-a, --assets [path]'
 				commandDescription: 'Set assets directory source (String)'
 			assetsExt:
 				defaultValue: ['svg']
-				commands: '-A, --assets-ext <list>'
+				commands: '-A, --assets-ext [list]'
 				commandDescription: 'Set assets authorized extensions (Array or String)'
 			logLevels:
 				defaultValue: ['warning', 'error', 'info']
-				commands: '-l, --log-levels <list>'
+				commands: '-l, --log-levels [list]'
 				commandDescription: 'Set level of logs (Array or String)'
 			preserveRoot:
 				defaultValue: true
