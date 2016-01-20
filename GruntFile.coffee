@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = (grunt) ->
 
   # ===========================================================================
@@ -66,6 +68,11 @@ module.exports = (grunt) ->
         options:
           liveReload: true
 
+    shell:
+      options:
+        stderr: true
+      svgAssets:
+        command: 'svg-assets -r -d example -a example/files'
 
 
   # Load all plugins declared as dependencies in package.json file ------------------------------------
@@ -74,21 +81,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks dep for dep of pack.dependencies when depMatch.test dep
 
   grunt.registerTask 'prepare', [ 'clean', 'copy', 'coffee' ]
-  grunt.registerTask 'example', [ 'prepare', 'run-example' ]
-
-  grunt.registerTask 'run-example', 'Call svgAssets', ->
-    SvgAssets = require './index'
-
-    options =
-      directory: 'example/templates'
-      assets: 'example/files'
-
-    svgAssets = new SvgAssets(options)
-    svgAssets.process()
-    return
-
-  grunt.registerTask 'lib-index', 'Create index.js file at root of projet', ->
-
+  grunt.registerTask 'example', [ 'prepare', 'shell:svgAssets' ]
 
   grunt.registerTask 'package-version', 'Write new version for package.json file', ->
     newPackageVersion = grunt.config "pkg.newVersion"
