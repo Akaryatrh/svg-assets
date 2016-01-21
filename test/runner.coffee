@@ -3,7 +3,7 @@ loggerTest = require './loggerTest'
 OptionsManagerTest = require './options-managerTest'
 sharedObjectsTest = require './sharedObjectsTest'
 
-describe 'shareD objects instance', ->
+describe 'shared objects instance', ->
 	sharedObjectsTest.run()
 
 describe 'options manager instance', ->
