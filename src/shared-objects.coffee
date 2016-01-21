@@ -46,5 +46,5 @@ module.exports = class SharedObjects
 				commandDescription: 'Set level of logs (Array or String)'
 			preserveRoot:
 				defaultValue: true
-				commands: '-p, --preserve-root'
+				commands: '-p, --preserve-root [bool]'
 				commandDescription: 'Set root directories protection (Boolean)'

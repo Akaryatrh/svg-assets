@@ -32,6 +32,15 @@ module.exports = class CliParser
   matchArguments: () ->
     options = {}
     for option of @shared.optionsDefinitions
+      # We need to manually check for boolean value
+      # while commander has no real support for it right now
+      if option is 'preserveRoot' and typeof commander[option] isnt 'boolean'
+        if commander[option] is 'false'
+          commander[option] = false
+          options.directory = @shared.optionsDefinitions.directory.defaultValue
+          options.assets = @shared.optionsDefinitions.assets.defaultValue
+        else
       options[option] = commander[option] if commander[option]?
+      
     options
 
