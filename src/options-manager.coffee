@@ -17,10 +17,10 @@ module.exports = class OptionsManager
 			success: true
 			shared: @shared
 
-		# No options defined -> fallback to default ones
 		if options
 			@shared.options = options
 		else
+			# No options defined -> fallback to default ones
 			@shared.options = @shared.defaultOptions
 			@shared.logs.warnings.push "No options found -> defaults options have been used instead"
 

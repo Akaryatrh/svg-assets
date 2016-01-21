@@ -1,6 +1,7 @@
 'use strict'
 
 fs = require 'fs'
+mkdirp = require 'mkdirp'
 OptionsManager = require './options-manager'
 Logger = require './logger'
 sharedObjects = require './shared-objects'
@@ -131,9 +132,36 @@ module.exports = class SvgAssets
 			# Finaly we can return the new string
 			newData
 
+		# Check output options, then change path if needed
+		outputDir = @shared.options.outputDirectory
+		currentDir = @shared.options.directory
+		extensions = @shared.options.templatesExt.join('|')
+		pattern =///
+			#{ currentDir} # current_directory
+			(.*\/{1})? # /folder1/folder2/
+			(?:.+\.( #{ extensions } )){1}$ # filename.ext
+			///i
+
+		finalPath = finalDir = ''
+		if outputDir?
+			# Extract path without filename and replace root directory
+			finalDir = path.replace pattern, outputDir + '/$1'
+			# Replace root directory
+			finalPath = path.replace currentDir, outputDir + '/'
+			# Sanitize slashes
+			finalPath = finalPath.replace "//", "/"
+			finalDir = finalDir.replace "//", "/"
+		else
+			finalPath = path
+			finalDir = currentDir
 
 		# Now we can write the file with its new content
 		if dataTemplate isnt res
-			fs.writeFileSync path, res
+			# Use mkdirp that create path if not exists
+			mkdirp finalDir, (err) =>
+				if (err)
+					@shared.logs.errors.globalMessages.push err
+				else
+					fs.writeFileSync finalPath, res
 
 		res

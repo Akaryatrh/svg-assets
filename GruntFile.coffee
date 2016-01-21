@@ -44,7 +44,7 @@ module.exports = (grunt) ->
         ]
 
     clean:
-      example: ['example']
+      example: ['example', 'example-output']
 
     coffee:
       options:
@@ -72,7 +72,7 @@ module.exports = (grunt) ->
       options:
         stderr: true
       svgAssets:
-        command: 'svg-assets -r -d example -a example/files'
+        command: 'svg-assets -r -d example -a example/files -o example-output'
 
 
   # Load all plugins declared as dependencies in package.json file ------------------------------------
