@@ -46,8 +46,7 @@ module.exports = run: ->
 
 
 
-
-	describe '@rfs', ->
+	describe '@rfds', ->
 
 
 		it 'should try to read synchronously an accessible svg file and should return its content', ->
@@ -58,13 +57,13 @@ module.exports = run: ->
 			"""
 			path = './test/assets/file.svg'
 
-			expect(svgAssets.rfs).to.be.a 'function'
-			expect(svgAssets.rfs(path)).to.equal mock
+			expect(svgAssets.rfds).to.be.a 'function'
+			expect(svgAssets.rfds(path, 'file')).to.equal mock
 
 
 		it 'should fail to read synchronously a missing svg file and should return null', ->
 			path = './test/assets/fake.svg'
-			expect(svgAssets.rfs(path)).to.equal null
+			expect(svgAssets.rfds(path, 'file')).to.equal null
 
 
 
@@ -101,6 +100,16 @@ module.exports = run: ->
 		beforeEach ->
 			#We stub the writeFileSync method
 			sinon.stub fs, "writeFileSync"
+			# Provide options while they have not been initialied by process function
+			svgAssets.shared.options =
+				directory: './test'
+				templatesExt: ['html', 'htm', 'hbs', 'handlebars']
+				outputDirectory: ''
+				assets: './test'
+				assetsExt: ['svg']
+				logLevels: ['warning', 'error', 'info']
+				preserveRoot: true
+
 
 		afterEach ->
 			fs.writeFileSync.restore()

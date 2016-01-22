@@ -1,3 +1,5 @@
+'use strict'
+
 clc = require 'cli-color'
 Util = require 'util'
 sharedObjects = require './shared-objects'
@@ -30,7 +32,7 @@ module.exports = class Logger
 		else
 			@shared.logs.warnings.push """
 			No file processed :
-			\t∷ Processing could have been aborted due to wrong options definitions
+			\t∷ Processing could have been aborted due to wrong options usage or unexpected error
 			\t∷ No <svga> tags could have been found
 			\t∷ Found <svga> tags might have not matched any files
 			"""
