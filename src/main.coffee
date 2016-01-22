@@ -46,7 +46,8 @@ module.exports = class SvgAssets
 				then response = fs.readdirSync path
 
 		catch err
-			@shared.logs.errors.globalMessages.push err
+			error = "Error: #{ err.message }"
+			@shared.logs.errors.globalMessages.push error
 			return null
 
 		response
@@ -55,10 +56,10 @@ module.exports = class SvgAssets
 		try
 			fs.lstatSync path
 			fs.statSync(path).isDirectory()
-			true
 		catch err
-			@shared.logs.errors.globalMessages.push err
-			return
+			error = "Error: #{ err.message }"
+			@shared.logs.errors.globalMessages.push error
+			return null
 			
 		
 
