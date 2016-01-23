@@ -61,9 +61,42 @@ module.exports = run: ->
 			expect(svgAssets.rfds(path, 'file')).to.equal mock
 
 
-		it 'should fail to read synchronously a missing svg file and should return null', ->
+		it 'should return null and push error in global log messages when file is missing', ->
 			path = './test/assets/fake.svg'
-			expect(svgAssets.rfds(path, 'file')).to.equal null
+			svgAssets.shared =
+				logs:
+					errors:
+						globalMessages: []
+			err = ["Error: ENOENT, no such file or directory './test/assets/fake.svg'"]
+
+			expect(svgAssets.rfds(path, 'file')).to.be.null
+			expect(svgAssets.shared.logs.errors.globalMessages).to.deep.members err
+
+
+	describe '@checkIfDir', ->
+
+		it 'should return true when file is a directory', ->
+			path = './test'
+
+			expect(svgAssets.checkIfDir).to.be.a 'function'
+			expect(svgAssets.checkIfDir(path)).to.be.true
+
+		it 'should return false when file is not a directory', ->
+			path = './test/assets/file.svg'
+
+			expect(svgAssets.checkIfDir(path)).to.be.false
+
+		it 'should return null and push error in global log messages when folder is missing', ->
+			path = './fake_folder/'
+			svgAssets.shared =
+				logs:
+					errors:
+						globalMessages: []
+			err = ["Error: ENOENT, no such file or directory './fake_folder/'"]
+
+			expect(svgAssets.checkIfDir(path)).to.be.null
+			expect(svgAssets.shared.logs.errors.globalMessages).to.deep.members err
+
 
 
 

@@ -1,3 +1,4 @@
+cliParserTest = require './cli-parserTest'
 mainTest = require './mainTest'
 loggerTest = require './loggerTest'
 OptionsManagerTest = require './options-managerTest'
@@ -8,6 +9,9 @@ describe 'shared objects instance', ->
 
 describe 'options manager instance', ->
 	OptionsManagerTest.run()
+
+describe 'cli parser instance', ->
+	cliParserTest.run()
 
 describe 'svgAssets instance', ->
 	mainTest.run()
