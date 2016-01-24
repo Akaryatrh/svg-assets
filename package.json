@@ -1,14 +1,14 @@
 {
-	"name": "svgAssets",
+	"name": "svg-assets",
 	"description": "Replace any <svga>file</svga> tags with related svg files",
 	"version": "0.1.0",
 	"author": "Sébastien Van Eyck",
-	"homepage": "https://github.com/Akaryatrh/svgAssets",
+	"homepage": "https://github.com/Akaryatrh/svg-assets",
 	"bugs": "https://github.com/Akaryatrh/svgAssets/issues",
 	"keywords": [ "svg", "replace", "file" ],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Akaryatrh/svgAssets"
+		"url": "https://github.com/Akaryatrh/svg-assets"
 	},
 	"scripts": {
 		"test": "coffeelint ./**/*.coffee -r && mocha ./test --require coffee-script/register --compilers coffee:coffee-script/register -R spec --check-leaks",
