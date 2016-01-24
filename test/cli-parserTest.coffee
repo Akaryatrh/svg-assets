@@ -35,7 +35,7 @@ module.exports = run: ->
 			replaceFunc = ->
 				'help output'
 			sinon.stub commander, 'outputHelp', replaceFunc
-			expect(cliParser.initCommander()).to.equal 'help output'
+			expect(cliParser.initCommander([])).to.equal 'help output'
 			commander.outputHelp.restore()
 
 		it 'should returns empty options with "--run" argument', ->
