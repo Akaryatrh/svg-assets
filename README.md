@@ -1,4 +1,4 @@
-#svg-assets
+#svg-assets [![Build Status](https://travis-ci.org/Akaryatrh/svg-assets.svg?branch=master)](https://travis-ci.org/Akaryatrh/svg-assets)
 ---------
 
 **_Warning_** :
