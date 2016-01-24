@@ -1,8 +1,8 @@
-#svgAssets
+#svg-assets
 ---------
 
 **_Warning_** :
-This project is relatively new and still a work in progress. Feel free to report any issues encountered or any possible enhancements.
+This project is still a work in progress. Feel free to report any issues encountered or any possible enhancements.
 
 **_Future of project_** :
 The main goal is to offer Brunch, Grunt, and Gulp plugins.
@@ -14,75 +14,113 @@ The main goal is to offer Brunch, Grunt, and Gulp plugins.
 
 Using **svg** in a project is great for many reasons (scalable size, all elements are editable with css, etc.). But a svg file can be sometimes **huge**, and including its source directly in your template file makes it **unreadable**.
 
-That's where **svgAssets** comes to the rescue !
+That's where **svg-assets** comes to the rescue !
 It'll parse any template file to find `<svga>` tags and replace them with related assets files.
 
 
 
+## Installation
+---------------
 
-
-
-## How to use it ?
-------------------
-
-svgAssets comes with a few **options**. These options (except `directory` and `assets`) will be used by default, and any of them will be replaced by defined ones.
-
-```javascript
-    directory: './templates'
-    assets: './assets'
-	templatesExt: ['html', 'htm', 'hbs', 'handlebars']
-	assetsExt: ['svg']
-	logLevels: ['warning', 'error', 'info']
-	preserveRoot: true
+Installing globally will give you access to the `svg-assets` command anywhere on your system
+```
+npm install -g svg-assets
 ```
 
+## Usage
+------------------
+
+svg-assets comes with a few **options**. These options will be used by default (except `directory` and `assets`), and any of them will be replaced by defined ones.
+
+|Option  | Default value | Notes|
+:------------- | :------------------------- | :-----------|
+| directory  | none | default value will be the root of project if `preserve-root` is set to false  |
+| templates-ext | ['html', 'htm', 'hbs', 'handlebars'] | none |
+| output-directory | null | if no output directory is set, It will override source template files |
+| assets  | none | default value will be the root of project if `preserve-root` is set to false |
+| assets-ext | ['svg'] | none |
+| preserve-root | true  | none |
+| logLevels | ['warning', 'error', 'info'] | none |
+
+---
+
 ### directory
-**Option format:** `string`
+**Command:** `-d`, `--directory`  
+**Option format:** `string` (`Array` support in a further release)
 
-Defines where svgAssets will look for files containing `<svga>` tags.
-If not defined, the **root directory** of your project will be used, except if `preserveRoot` option has been set to `true` (default behavior).
-
----
-
-### assets
-**Option format:** `string`
-
-Defines where svgAssets will look for files matching the value contained by a `<svga>` tag.
-If not defined, the **root directory** of your project will be used, except if `preserveRoot` option has been set to `true` (default behavior).
+Defines where svg-assets will look for files containing `<svga>` tags.  
+If not defined, the **root directory** of your project will be used, except if `preserve-root` option has been set to `true` (default behavior).
 
 ---
 
-### templatesExt
+### templates-ext
+**Command:** `-t`, `--templates-ext`  
 **Option format:** `string` or `Array`
 
-Defines what kind of template files svgAssets will look for.
+Defines what kind of template files svg-assets will look for.  
 If not defined, the following extensions will be used : `html`, `htm`, `hbs`, `handlebars`
 
 ---
 
+### output-directory
+**Command:** `-o`, `--output-directory`  
+**Option format:** `string`
 
-### assetsExt
+Defines where the processed template files will be saved.  
+:warning: If not defined, source templates files will be overwritten
+
+---
+
+### assets
+**Command:** `-a`, `--assets`  
+**Option format:** `string` (`Array` support in a further release)
+
+Defines where svg-assets will look for files matching the value contained by a `<svga>` tag.  
+If not defined, the **root directory** of your project will be used, except if `preserve-root` option has been set to `true` (default behavior).
+
+---
+
+### assets-ext
+**Command:** `-A`, `--assets-ext`  
 **Option format:** `string` or `Array`
 
-Defines what kind of assets files svgAssets will look for.
+Defines what kind of assets files svg-assets will look for.  
 If not defined, the following extension will be used : `svg`
 
-
 ---
 
-
-### logLevels
+### log-levels
+**Command:** `-l`, `--log-levels`  
 **Option format:** `string` or `Array`
 
-Defines what kind of logs will be displayed on console output.
+Defines what kind of logs will be displayed on console output.  
 If not defined, the following log levels will be used : `warning`, `error`, `info`
-
 
 ---
 
-
-### preserveRoot
+### preserve-root
+**Command:** `-p`, `--preserve-root`  
 **Option format:** `boolean`
 
-When set to `true`, will preserve the root directory of your project to be used to find matching files.
+When set to `true`, preserve the root directory of your project to be used for finding matching files.  
 This option is set to `true` by default.
+
+
+## Example
+----------
+The following command will process template files in `foo/` folder, and look for assets in `bar/` folder. Processed templates will be saved to `foobar/` folder
+
+```
+svg-assets -d foo -a bar -o foobar
+```
+
+If you forked the project, you can also use the following commands to run an example:
+```
+npm install
+grunt example
+
+```
+
+## License
+----------
+svg-assets is released under the MIT license
