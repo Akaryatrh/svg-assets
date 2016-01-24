@@ -52,7 +52,7 @@ module.exports = run: ->
 			warnings = [
 				"""
 				No file processed :
-				\t∷ Processing could have been aborted due to wrong options definitions
+				\t∷ Processing could have been aborted due to wrong options usage or unexpected error
 				\t∷ No <svga> tags could have been found
 				\t∷ Found <svga> tags might have not matched any files
 				"""

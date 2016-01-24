@@ -28,6 +28,10 @@ module.exports = run: ->
 			sharedLogs = sharedObjects.logs()
 			expect(sharedLogs).to.be.an 'object'
 
+		it 'should have registered a shared options object', ->
+			sharedOptions = sharedObjects.defaultOptions()
+			expect(sharedOptions).to.be.an 'object'
+
 
 	describe '@returnOptionsAndWarning', ->
 

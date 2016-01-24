@@ -45,11 +45,34 @@ module.exports = run: ->
 		it 'should return a predefined object', ->
 
 			mock =
+				directory: '.'
 				templatesExt: ['html', 'htm', 'hbs', 'handlebars']
+				assets: '.'
 				assetsExt: ['svg']
 				logLevels: ['warning', 'error', 'info']
 				preserveRoot: true
 
 			expect(shared.defaultOptions()).to.deep.equal mock
+
+
+	describe '@optionsDefinitions', ->
+
+		it 'should be a predefined object', ->
+			expect(shared.optionsDefinitions).to.be.an 'object'
+
+		it 'should have default values for each option', ->
+			for option in shared.optionsDefinitions
+				testIfdefaultValue = option.hasOwnProperty 'defaultValue'
+				expect(testIfdefaultValue).to.be.true
+
+		it 'should have a command definition for each option', ->
+			for option in shared.optionsDefinitions
+				testIfCommand = option.hasOwnProperty 'commands'
+				expect(testIfCommand).to.be.true
+
+		it 'should have a command description for each option', ->
+			for option in shared.optionsDefinitions
+				testIfCommandDesc = option.hasOwnProperty 'commandDescription'
+				expect(testIfCommandDesc).to.be.true
 
 	return
