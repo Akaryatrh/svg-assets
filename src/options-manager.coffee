@@ -21,7 +21,8 @@ module.exports = class OptionsManager
 			@shared.options = options
 		else
 			# No options defined -> fallback to default ones
-			@shared.options = @shared.defaultOptions
+			# Looks useless while it set by default in constructor
+			#@shared.options = @shared.defaultOptions
 			@shared.logs.warnings.push "No options found -> defaults options have been used instead"
 
 
@@ -38,6 +39,7 @@ module.exports = class OptionsManager
 				retObject.success = false
 				return retObject
 			else
+				@shared.options.directory = @shared.optionsDefinitions.directory.defaultValue
 				@shared.logs.warnings.push "#{prefix}the root of your project has been used to find <svga> tags"
 
 
@@ -48,6 +50,7 @@ module.exports = class OptionsManager
 				retObject.success = false
 				return retObject
 			else
+				@shared.options.assets = @shared.optionsDefinitions.assets.defaultValue
 				@shared.logs.warnings.push "#{prefix}the root of your project has been used to find matching files"
 
 
@@ -55,7 +58,6 @@ module.exports = class OptionsManager
 			@shared.logs.warnings.push """
 			  No output directory specified -> template source files will be replaced
 			"""
-				
 
 		return retObject
 
