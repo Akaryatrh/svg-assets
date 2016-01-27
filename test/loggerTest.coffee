@@ -42,7 +42,7 @@ module.exports = run: ->
 			return
 
 		beforeEach ->
-			sinon.stub logger, 'cl', replaceFunc()
+			sinon.stub logger, 'cl', replaceFunc
 
 		it 'should be a function', ->
 			expect(logger.log).to.be.a 'function'
@@ -70,7 +70,7 @@ module.exports = run: ->
 		it 'with specific options, should not push warnings in logs', ->
 
 			warnings = []
-			options = {
+			options =
 				logs:
 					errors:
 						missingFiles: []
@@ -81,14 +81,14 @@ module.exports = run: ->
 						tags: 1
 						filesLength: 1
 					startDate: Date.now()
-			}
+
 			returnedLogs = logger.log(options)
 			expect(returnedLogs.logs.warnings).to.deep.members warnings
 
 		it 'with specific options, should push proper infos in logs', ->
 
 			infos = ['1 <svga> tag(s) have been processed in 1 file(s)']
-			options = {
+			options =
 				logs:
 					errors:
 						missingFiles: []
@@ -99,7 +99,7 @@ module.exports = run: ->
 						tags: 1
 						filesLength: 1
 					startDate: Date.now()
-			}
+
 			returnedLogs = logger.log(options)
 			expect(returnedLogs.logs.infos).to.deep.members infos
 
@@ -109,7 +109,7 @@ module.exports = run: ->
 			2 assets file(s) not found or not readable:
 			 "file1.svg","file2.svg"
 			"""]
-			options = {
+			options =
 				logs:
 					errors:
 						missingFiles: ['file1', 'file2']
@@ -120,13 +120,46 @@ module.exports = run: ->
 						tags: 0
 						filesLength: 0
 					startDate: Date.now()
-			}
+
 			returnedLogs = logger.log(options)
 			expect(returnedLogs.logs.errors.globalMessages).to.deep.members errors
 
-
 		it 'should have called console log', ->
-			logger.log()
+			sinon.stub logger.log()
 			expect(logger.cl.calledWith(sinon.match('svgAssets did its job in'))).to.equal true
+
+
+
+	describe '@coloringOutput', ->
+
+		it 'should be a function', ->
+			expect(logger.coloringOutput).to.be.a 'function'
+
+		it 'should output a colored warning message with type "warning" and a message', ->
+			type = 'warning'
+			message = 'current warning message'
+			expected = "\u001b[33m\n→ Warning: \u001b[39mcurrent warning message"
+
+			expect(logger.coloringOutput(type, message)).to.equal expected
+
+		it 'should output a colored error message with type "error" and a message', ->
+			type = 'error'
+			message = 'current error message'
+			expected = "\u001b[31m\n→ Error: \u001b[39mcurrent error message"
+
+			expect(logger.coloringOutput(type, message)).to.equal expected
+
+		it 'should output a colored info message with type "info" and a message', ->
+			type = 'info'
+			message = 'current info message'
+			expected = "\u001b[32m\n→ Info: \u001b[39mcurrent info message"
+
+			expect(logger.coloringOutput(type, message)).to.equal expected
+
+		it 'should output a colored exec message with type "exec" and no message', ->
+			type = 'exec'
+			expected = "\u001b[90m\n→ svgAssets did its job in 0ms\u001b[39m"
+
+			expect(logger.coloringOutput(type)).to.equal expected
 
 	return
