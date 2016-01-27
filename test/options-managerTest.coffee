@@ -169,7 +169,7 @@ module.exports = run: ->
 		it should return default values and warn user', ->
 			option = 'logLevels'
 			overrideOptions =
-				logLevels: ['unknown']
+				logLevels: 'unknown'
 			optionsManager.shared.options = overrideOptions
 			spy = sinon.spy(optionsManager, 'returnOptionsAndWarning')
 			returnedValues = ['warning', 'error', 'info']
