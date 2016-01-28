@@ -124,6 +124,101 @@ module.exports = run: ->
 			returnedLogs = logger.log(options)
 			expect(returnedLogs.logs.errors.globalMessages).to.deep.members errors
 
+		it """
+		should call 4 times @coloringOutput
+			with only warning log-levels and 3 warnings messages
+		""", ->
+			shared =
+				options:
+					logLevels: ['warning']
+				logs:
+					errors:
+						missingFiles: ['bar', 'test']
+						globalMessages: ['test']
+					warnings: ['foo', 'bar', 'test']
+					infos: ['foo']
+					process:
+						tags: 1
+						filesLength: 1
+					startDate: Date.now()
+			spy = sinon.spy logger, 'coloringOutput'
+
+			logger.log(shared)
+			expect(spy.callCount).to.equal 4
+			logger.coloringOutput.restore()
+
+		it """
+		should call 3 times @coloringOutput
+			with only info log-levels and 2 infos messages
+		""", ->
+			shared =
+				options:
+					logLevels: ['info']
+				logs:
+					errors:
+						missingFiles: ['bar', 'test']
+						globalMessages: ['test']
+					warnings: []
+					infos: ['foo']
+					process:
+						tags: 1
+						filesLength: 1
+					startDate: Date.now()
+			spy = sinon.spy logger, 'coloringOutput'
+
+			logger.log(shared)
+			expect(spy.callCount).to.equal 3
+			logger.coloringOutput.restore()
+
+		it """
+		should call 4 times @coloringOutput
+			with only error log-levels and 3 errors messages
+		""", ->
+			shared =
+				options:
+					logLevels: ['error']
+				logs:
+					errors:
+						missingFiles: []
+						globalMessages: ['foo', 'bar', 'test']
+					warnings: ['bar', 'test']
+					infos: ['foo']
+					process:
+						tags: 1
+						filesLength: 1
+					startDate: Date.now()
+			spy = sinon.spy logger, 'coloringOutput'
+
+			logger.log(shared)
+			expect(spy.callCount).to.equal 4
+			logger.coloringOutput.restore()
+
+		it """
+		should call 7 times @coloringOutput
+			with warning log-levels and 1 warnings messages
+			with info log-levels and 2 infos messages
+			with error log-levels and 3 errors messages
+		""", ->
+			shared =
+				options:
+					logLevels: ['warning', 'info', 'error']
+				logs:
+					errors:
+						missingFiles: []
+						globalMessages: ['foo', 'bar', 'test']
+					warnings: ['bar']
+					infos: ['foo']
+					process:
+						tags: 1
+						filesLength: 1
+					startDate: Date.now()
+			spy = sinon.spy logger, 'coloringOutput'
+
+			logger.log(shared)
+			expect(spy.callCount).to.equal 7
+			logger.coloringOutput.restore()
+
+
 		it 'should have called console log', ->
 			sinon.stub logger.log()
 			expect(logger.cl.calledWith(sinon.match('svgAssets did its job in'))).to.equal true
