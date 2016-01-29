@@ -20,9 +20,6 @@ module.exports = class OptionsManager
 		if options
 			@shared.options = options
 		else
-			# No options defined -> fallback to default ones
-			# Looks useless while it set by default in constructor
-			#@shared.options = @shared.defaultOptions
 			@shared.logs.warnings.push "No options found -> defaults options have been used instead"
 
 

@@ -45,6 +45,83 @@ module.exports = run: ->
 			expect(svgAssets._logger).to.be.an.instanceof Logger
 
 
+	describe '@process', ->
+
+		it 'should be a function', ->
+			expect(svgAssets.process).to.be.a 'function'
+
+		it """
+			should call option manager to init options
+				and set shared options
+			""", ->
+			spy = sinon.spy svgAssets._optionsManager, 'init'
+			sinon.stub svgAssets._logger, 'log', -> return null
+			svgAssets.process()
+			sharedOptions =
+				defaultOptions:
+					assetsExt: ["svg"]
+					logLevels: ["warning", "error", "info"]
+					preserveRoot: true
+					templatesExt: ["html", "htm", "hbs", "handlebars"]
+				logs:
+					errors:
+						globalMessages: ["No directory specified -> processing aborted"]
+						missingFiles: []
+					infos: []
+					process:
+						filesLength: 0
+						tags: 0
+					startDate: 0
+					warnings: ["No options found -> defaults options have been used instead"]
+				options:
+					assetsExt: ["svg"]
+					logLevels: ["warning", "error", "info"]
+					preserveRoot: true
+					templatesExt: ["html", "htm", "hbs", "handlebars"]
+
+			expect(spy.called).to.equal true
+			expect(svgAssets.shared.defaultOptions).to.deep.equal sharedOptions.defaultOptions
+			expect(svgAssets.shared.logs).to.deep.equal sharedOptions.logs
+			expect(svgAssets.shared.options).to.deep.equal sharedOptions.options
+			svgAssets._optionsManager.init.restore()
+			svgAssets._logger.log.restore()
+
+		it """
+			should call when options are successfully initiated:
+				@walk twice
+				@findAndReplace twice
+				@logger.log once
+			""", ->
+			initOptions =
+				success: true
+				shared:
+					options:
+						directory: 'foo'
+						assets: 'bar'
+						assetsExt: ["svg"]
+						logLevels: ["warning", "error", "info"]
+						preserveRoot: true
+						templatesExt: ["html", "htm", "hbs", "handlebars"]
+			replaceFunc = ->
+				return initOptions
+			walkCb = ->
+				return ['foo', 'bar']
+			findAndReplaceCb = ->
+				return 'done'
+			loggerCb = ->
+				return 'log'
+
+			sinon.stub svgAssets._optionsManager, 'init', replaceFunc
+			stubWalk = sinon.stub svgAssets, 'walk', walkCb
+			stubFindReplace = sinon.stub svgAssets, 'findAndReplace', findAndReplaceCb
+			stubLogger = sinon.stub svgAssets._logger, 'log', loggerCb
+			svgAssets.process()
+
+			expect(stubWalk.callCount).to.equal 2
+			expect(stubFindReplace.callCount).to.equal 2
+			expect(stubLogger.callCount).to.equal 1
+
+
 
 	describe '@rfds', ->
 
