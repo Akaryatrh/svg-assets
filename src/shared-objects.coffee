@@ -16,11 +16,13 @@ module.exports = class SharedObjects
 		defaultOptions: ->
 			retObject = {}
 			for option, value of @optionsDefinitions
-				if value.defaultValue isnt null then retObject[option] = value.defaultValue
+				if value.defaultValue isnt null and !value.ignoreForDefaultOptions
+				then retObject[option] = value.defaultValue
 			retObject
 
 		optionsDefinitions:
 			directory:
+				ignoreForDefaultOptions: true
 				defaultValue: '.'
 				commands: '-d, --directory [path]'
 				commandDescription: 'Set templates directory source (String)'
@@ -33,6 +35,7 @@ module.exports = class SharedObjects
 				commands: '-o, --output-directory [path]'
 				commandDescription: 'Set templates directory destination (String)'
 			assets:
+				ignoreForDefaultOptions: true
 				defaultValue: '.'
 				commands: '-a, --assets [path]'
 				commandDescription: 'Set assets directory source (String)'

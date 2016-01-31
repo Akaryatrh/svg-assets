@@ -61,12 +61,15 @@ module.exports = (grunt) ->
 
     watch:
       coffee:
-        files: [
-          'src/**/*.coffee'
-        ],
+        files: ['**/*.coffee']
         tasks: ['coffee']
         options:
           liveReload: true
+
+      config:
+        options:
+          reload: true
+        files: ['GruntFile.coffee']
 
     shell:
       options:

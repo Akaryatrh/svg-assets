@@ -60,9 +60,6 @@ module.exports = class SvgAssets
 			error = "Error: #{ err.message }"
 			@shared.logs.errors.globalMessages.push error
 			return null
-			
-		
-
 
 	# List files recursively
 	walk: (dir, ext)->
@@ -82,6 +79,15 @@ module.exports = class SvgAssets
 
 		_walk dir
 
+	createDirIfNotExists: (path) ->
+		try
+			# Use synchronous mkdirp to create path if not exists
+			mkdirp.sync path
+			true
+		catch err
+			error = "Error: #{ err.message }"
+			@shared.logs.errors.globalMessages.push error
+			return null
 
 	#Find and replace <svga>
 	findAndReplace: (path, assetsFiles) ->
@@ -95,7 +101,9 @@ module.exports = class SvgAssets
 			# We want to replace <svga> tag with contents from matching svg file
 			for asset in assetsFiles
 				# we look for an asset with a path ending with filename
-				pattern = ///\/#{filename}\.svg$///
+				pattern = ///
+				(\/)?#{filename}\.svg$
+				///
 				if asset.match pattern
 					newData = @rfds asset, 'file'
 					# when found, we jump off the loop
@@ -158,11 +166,8 @@ module.exports = class SvgAssets
 
 		# Now we can write the file with its new content
 		if dataTemplate isnt res
-			# Use mkdirp that create path if not exists
-			mkdirp finalDir, (err) =>
-				if (err)
-					@shared.logs.errors.globalMessages.push err
-				else
-					fs.writeFileSync finalPath, res
+			finalDir = @createDirIfNotExists finalDir
+			if finalDir?
+				fs.writeFileSync finalPath, res
 
 		res

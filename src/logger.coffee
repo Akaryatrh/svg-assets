@@ -51,30 +51,22 @@ module.exports = class Logger
 
 		### OUTPUT ###
 
-		# Colors
-		errorCl = clc.red
-		warnCl = clc.yellow
-		infoCl = clc.green
-		exeCl = clc.blackBright
-
 		# Warning log
-		if @shared.options?.logLevels.indexOf "warning" > -1
+		if @shared.options?.logLevels.indexOf("warning") > -1
 			for warning in @shared.logs.warnings
-				logOutput += warnCl('\n→ Warning: ') + warning
+				logOutput += @coloringOutput 'warning', warning
 
 		# Info log
-		if @shared.options?.logLevels.indexOf "info" > -1
+		if @shared.options?.logLevels.indexOf("info") > -1
 			for info in @shared.logs.infos
-				logOutput += infoCl('\n→ Info: ') + info
+				logOutput += @coloringOutput 'info', info
 
 		# Global error log
-		if @shared.options?.logLevels.indexOf "error" > -1
+		if @shared.options?.logLevels.indexOf("error") > -1
 			for error in @shared.logs.errors.globalMessages
-				logOutput += errorCl('\n→ Error: ') + error
+				logOutput += @coloringOutput 'error', error
 
-
-		end = (Date.now() - @shared.logs.startDate) / 1000
-		logOutput += exeCl("\n→ svgAssets did its job in #{ end }ms")
+		logOutput += @coloringOutput 'exec'
 		@cl logOutput
 
 		finalValues =
@@ -82,3 +74,34 @@ module.exports = class Logger
 			logs: @shared.logs
 
 		return finalValues
+
+	coloringOutput: (type, message) ->
+		#shorthands to cli-colors
+		errorCl = clc.red
+		warnCl = clc.yellow
+		infoCl = clc.green
+		exeCl = clc.blackBright
+
+		# Default values
+		message ?= ''
+		wording = ''
+
+		switch type
+			when "warning"
+				method = warnCl
+				wording = 'Warning: '
+			when 'error'
+				method = errorCl
+				wording = 'Error: '
+			when 'info'
+				method = infoCl
+				wording = 'Info: '
+			when 'exec'
+				method = exeCl
+				end = (Date.now() - @shared.logs.startDate) / 1000
+				wording = "svgAssets did its job in #{ end }ms"
+
+		finalMessage = "\n→ #{ wording }"
+
+		return method(finalMessage) + message
+
