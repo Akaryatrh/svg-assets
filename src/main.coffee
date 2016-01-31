@@ -83,6 +83,7 @@ module.exports = class SvgAssets
 		try
 			# Use synchronous mkdirp to create path if not exists
 			mkdirp.sync path
+			true
 		catch err
 			error = "Error: #{ err.message }"
 			@shared.logs.errors.globalMessages.push error
@@ -165,11 +166,8 @@ module.exports = class SvgAssets
 
 		# Now we can write the file with its new content
 		if dataTemplate isnt res
-
 			finalDir = @createDirIfNotExists finalDir
 			if finalDir?
 				fs.writeFileSync finalPath, res
-			else
-				return null
 
 		res
