@@ -45,9 +45,7 @@ module.exports = run: ->
 		it 'should return a predefined object', ->
 
 			mock =
-				directory: '.'
 				templatesExt: ['html', 'htm', 'hbs', 'handlebars']
-				assets: '.'
 				assetsExt: ['svg']
 				logLevels: ['warning', 'error', 'info']
 				preserveRoot: true

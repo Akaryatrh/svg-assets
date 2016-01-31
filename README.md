@@ -1,4 +1,4 @@
-#svg-assets [![Build Status](https://travis-ci.org/Akaryatrh/svg-assets.svg?branch=master)](https://travis-ci.org/Akaryatrh/svg-assets)
+#svg-assets [![Build Status](https://travis-ci.org/Akaryatrh/svg-assets.svg?branch=master)](https://travis-ci.org/Akaryatrh/svg-assets) [![Coverage Status](https://coveralls.io/repos/github/Akaryatrh/svg-assets/badge.svg?branch=master)](https://coveralls.io/github/Akaryatrh/svg-assets?branch=master)
 ---------
 
 **_Warning_** :
@@ -45,64 +45,64 @@ svg-assets comes with a few **options**. These options will be used by default (
 ---
 
 ### directory
-**Command:** `-d`, `--directory`  
+**Command:** `-d`, `--directory`
 **Option format:** `string` (`Array` support in a further release)
 
-Defines where svg-assets will look for files containing `<svga>` tags.  
+Defines where svg-assets will look for files containing `<svga>` tags.
 If not defined, the **root directory** of your project will be used, except if `preserve-root` option has been set to `true` (default behavior).
 
 ---
 
 ### templates-ext
-**Command:** `-t`, `--templates-ext`  
+**Command:** `-t`, `--templates-ext`
 **Option format:** `string` or `Array`
 
-Defines what kind of template files svg-assets will look for.  
+Defines what kind of template files svg-assets will look for.
 If not defined, the following extensions will be used : `html`, `htm`, `hbs`, `handlebars`
 
 ---
 
 ### output-directory
-**Command:** `-o`, `--output-directory`  
+**Command:** `-o`, `--output-directory`
 **Option format:** `string`
 
-Defines where the processed template files will be saved.  
+Defines where the processed template files will be saved.
 :warning: If not defined, source templates files will be overwritten
 
 ---
 
 ### assets
-**Command:** `-a`, `--assets`  
+**Command:** `-a`, `--assets`
 **Option format:** `string` (`Array` support in a further release)
 
-Defines where svg-assets will look for files matching the value contained by a `<svga>` tag.  
+Defines where svg-assets will look for files matching the value contained by a `<svga>` tag.
 If not defined, the **root directory** of your project will be used, except if `preserve-root` option has been set to `true` (default behavior).
 
 ---
 
 ### assets-ext
-**Command:** `-A`, `--assets-ext`  
+**Command:** `-A`, `--assets-ext`
 **Option format:** `string` or `Array`
 
-Defines what kind of assets files svg-assets will look for.  
+Defines what kind of assets files svg-assets will look for.
 If not defined, the following extension will be used : `svg`
 
 ---
 
 ### log-levels
-**Command:** `-l`, `--log-levels`  
+**Command:** `-l`, `--log-levels`
 **Option format:** `string` or `Array`
 
-Defines what kind of logs will be displayed on console output.  
+Defines what kind of logs will be displayed on console output.
 If not defined, the following log levels will be used : `warning`, `error`, `info`
 
 ---
 
 ### preserve-root
-**Command:** `-p`, `--preserve-root`  
+**Command:** `-p`, `--preserve-root`
 **Option format:** `boolean`
 
-When set to `true`, preserve the root directory of your project to be used for finding matching files.  
+When set to `true`, preserve the root directory of your project to be used for finding matching files.
 This option is set to `true` by default.
 
 

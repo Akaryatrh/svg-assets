@@ -4,6 +4,7 @@ Logger = require '../src/logger'
 chai = require 'chai'
 sinon = require 'sinon'
 fs = require 'fs'
+mkdirp = require 'mkdirp'
 
 expect = chai.expect
 chai.should()
@@ -43,6 +44,83 @@ module.exports = run: ->
 		it 'should have created an instance of the Logger', ->
 			expect(svgAssets._logger).to.be.an 'object'
 			expect(svgAssets._logger).to.be.an.instanceof Logger
+
+
+	describe '@process', ->
+
+		it 'should be a function', ->
+			expect(svgAssets.process).to.be.a 'function'
+
+		it """
+			should call option manager to init options
+				and set shared options
+			""", ->
+			spy = sinon.spy svgAssets._optionsManager, 'init'
+			sinon.stub svgAssets._logger, 'log', -> return null
+			svgAssets.process()
+			sharedOptions =
+				defaultOptions:
+					assetsExt: ["svg"]
+					logLevels: ["warning", "error", "info"]
+					preserveRoot: true
+					templatesExt: ["html", "htm", "hbs", "handlebars"]
+				logs:
+					errors:
+						globalMessages: ["No directory specified -> processing aborted"]
+						missingFiles: []
+					infos: []
+					process:
+						filesLength: 0
+						tags: 0
+					startDate: 0
+					warnings: ["No options found -> defaults options have been used instead"]
+				options:
+					assetsExt: ["svg"]
+					logLevels: ["warning", "error", "info"]
+					preserveRoot: true
+					templatesExt: ["html", "htm", "hbs", "handlebars"]
+
+			expect(spy.called).to.equal true
+			expect(svgAssets.shared.defaultOptions).to.deep.equal sharedOptions.defaultOptions
+			expect(svgAssets.shared.logs).to.deep.equal sharedOptions.logs
+			expect(svgAssets.shared.options).to.deep.equal sharedOptions.options
+			svgAssets._optionsManager.init.restore()
+			svgAssets._logger.log.restore()
+
+		it """
+			should call when options are successfully initiated:
+				@walk twice
+				@findAndReplace twice
+				@logger.log once
+			""", ->
+			initOptions =
+				success: true
+				shared:
+					options:
+						directory: 'foo'
+						assets: 'bar'
+						assetsExt: ["svg"]
+						logLevels: ["warning", "error", "info"]
+						preserveRoot: true
+						templatesExt: ["html", "htm", "hbs", "handlebars"]
+			replaceFunc = ->
+				return initOptions
+			walkCb = ->
+				return ['foo', 'bar']
+			findAndReplaceCb = ->
+				return 'done'
+			loggerCb = ->
+				return 'log'
+
+			sinon.stub svgAssets._optionsManager, 'init', replaceFunc
+			stubWalk = sinon.stub svgAssets, 'walk', walkCb
+			stubFindReplace = sinon.stub svgAssets, 'findAndReplace', findAndReplaceCb
+			stubLogger = sinon.stub svgAssets._logger, 'log', loggerCb
+			svgAssets.process()
+
+			expect(stubWalk.callCount).to.equal 2
+			expect(stubFindReplace.callCount).to.equal 2
+			expect(stubLogger.callCount).to.equal 1
 
 
 
@@ -118,7 +196,7 @@ module.exports = run: ->
 			expect(svgAssets.walk(path, extensions)).to.include.members files
 
 		it 'should return an empty array if the target directory is empty', ->
-			path = './test/assets/emptySub'
+			path = './test/ass/emptySub'
 			files = []
 			extensions = ['svg']
 
@@ -126,54 +204,210 @@ module.exports = run: ->
 
 
 
+	describe '@createDirIfNotExists', ->
+
+		stubMkdirp = null
+
+		beforeEach ->
+			stubMkdirp = sinon.stub mkdirp, 'sync'
+
+		afterEach ->
+			mkdirp.sync.restore()
+
+		it 'should return true when mkdirp succeed', ->
+			stubMkdirp.returns true
+			expect(svgAssets.createDirIfNotExists('path/sub/sub-sub/test')).to.equal true
+
+		it 'should return null when mkdirp throws an error', ->
+			err =
+				message: 'test'
+			stubMkdirp.throws err
+			call = svgAssets.createDirIfNotExists('path/sub/sub-sub/test')
+			expect(svgAssets.shared.logs.errors.globalMessages).to.members ['Error: test']
+			expect(call).to.equal null
+
+
 
 
 	describe '@findAndReplace', ->
+		spyCreateDir =
+		stubRead =
+		stubWrite =
+		stubMkdirp =
+		replaceMkdirp =
+		templateContent =
+		fileContent =
+		processed =
+		assetsFiles =
+		path =
+		null
 
 		beforeEach ->
-			#We stub the writeFileSync method
-			sinon.stub fs, "writeFileSync"
+			templateContent = '<div><svga>myfile</svga></div>'
+			fileContent = '<svg></svg>'
+			processed = '<div><svg></svg></div>'
+			assetsFiles = ['test/myfile.svg']
+			path = 'test/mytemplate.html'
 			# Provide options while they have not been initialied by process function
 			svgAssets.shared.options =
-				directory: './test'
+				directory: 'test'
 				templatesExt: ['html', 'htm', 'hbs', 'handlebars']
-				outputDirectory: ''
-				assets: './test'
+				outputDirectory: null
+				assets: 'test'
 				assetsExt: ['svg']
 				logLevels: ['warning', 'error', 'info']
 				preserveRoot: true
 
+			#Stubs & spies
+			spyCreateDir = sinon.spy svgAssets, 'createDirIfNotExists'
+			stubRead = sinon.stub svgAssets, 'rfds'
+			stubWrite = sinon.stub fs, 'writeFileSync'
+			replaceMkdirp = ->
+				return true
+			stubMkdirp = sinon.stub mkdirp, 'sync', replaceMkdirp
 
 		afterEach ->
+			# restore stubbed & spied methods
+			svgAssets.createDirIfNotExists.restore()
+			svgAssets.rfds.restore()
 			fs.writeFileSync.restore()
+			mkdirp.sync.restore()
 
 
-		it 'should replace a <svga> tag with an existing matching file', ->
-			assetsFiles = ["./test/assets/file.svg"]
-			path = './test/templates/template.html'
-			mock = """
-			<!doctype html>
-			<html>
-				<head>
-				</head>
-				<body>
-					<svg height="400" width="450">
-				<path id="lineAB" d="M 100 350 l 150 -300" stroke="red" stroke-width="3" fill="none" />
+		it """
+			should replace a <svga> tag with an existing matching file
+			""", ->
+
+			stubRead.withArgs('test/mytemplate.html', 'file').returns templateContent
+			stubRead.withArgs('test/myfile.svg', 'file').returns fileContent
+
+			call = svgAssets.findAndReplace path, assetsFiles
+
+			# template and svg file should be read
+			expect(stubRead.callCount).to.equal 2
+			# final directory should exist or be created
+			expect(spyCreateDir.callCount).to.equal 1
+			# final file should be written
+			expect(stubWrite.callCount).to.equal 1
+			expect(stubWrite.calledWithExactly(path, processed)).to.equal true
+			# File content should be properly processed
+			expect(call).to.equal processed
+
+		it """
+			should replace a <svga> tag with an existing matching file
+				and output it on a different location
+			""", ->
+
+			svgAssets.shared.options.outputDirectory = 'foo'
+
+			stubRead.withArgs('test/mytemplate.html', 'file').returns templateContent
+			stubRead.withArgs('test/myfile.svg', 'file').returns fileContent
+
+			call = svgAssets.findAndReplace path, assetsFiles
+
+			# template and svg file should be read
+			expect(stubRead.callCount).to.equal 2
+			# final directory should exist or be created
+			expect(spyCreateDir.callCount).to.equal 1
+			# final file should be written
+			expect(stubWrite.callCount).to.equal 1
+			expect(stubWrite.calledWithExactly('foo/mytemplate.html', processed)).to.equal true
+			# File content should be properly processed
+			expect(call).to.equal processed
+
+		it """
+			should clean the svg content from unwanted tags & comments
+				and keep its properties
+			""", ->
+
+			fileContent = """
+			<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+			<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+			<svg
+			   xmlns:dc="http://purl.org/dc/elements/1.1/"
+			   xmlns:cc="http://creativecommons.org/ns#"
+			   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+			   xmlns:svg="http://www.w3.org/2000/svg"
+			   xmlns="http://www.w3.org/2000/svg"
+			   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+			   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+			   id="svg2"
+			   version="1.1"
+			   inkscape:version="0.47 r22583"
+			   width="2182.0059"
+			   height="4578.1162"
+			   sodipodi:docname="IPhone_5.png">
 			</svg>
-				</body>
-			</html>
 			"""
+
+			processed = """
+			<div>
+
+
+			<svg
+			   xmlns:dc="http://purl.org/dc/elements/1.1/"
+			   xmlns:cc="http://creativecommons.org/ns#"
+			   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+			   xmlns:svg="http://www.w3.org/2000/svg"
+			   xmlns="http://www.w3.org/2000/svg"
+			   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+			   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+			   id="svg2"
+			   version="1.1"
+			   inkscape:version="0.47 r22583"
+			   width="2182.0059"
+			   height="4578.1162"
+			   sodipodi:docname="IPhone_5.png">
+			</svg></div>
+			"""
+
+			stubRead.withArgs('test/mytemplate.html', 'file').returns templateContent
+			stubRead.withArgs('test/myfile.svg', 'file').returns fileContent
+
+			call = svgAssets.findAndReplace path, assetsFiles
+			# File content should be properly processed
+			expect(call).to.equal processed
+
+
+		it """
+			should leave untouched the template file
+				if not matching svg file found
+			""", ->
+
+			stubRead.withArgs('test/mytemplate.html', 'file').returns templateContent
+			stubRead.withArgs('test/myfile.svg', 'file').returns null
+
 			call = svgAssets.findAndReplace path, assetsFiles
 
-			expect(call).to.equal mock
+			# template and svg file should be read
+			expect(stubRead.callCount).to.equal 2
+			# final directory should exist or be created
+			expect(spyCreateDir.callCount).to.equal 0
+			# final file shouldn't be written
+			expect(stubWrite.callCount).to.equal 0
+			# File content shouldn't be processed
+			expect(call).to.equal templateContent
 
+		it """
+			should leave untouched the template file
+				if not matching svga tag found
+			""", ->
 
-		it 'should leave untouched the template file if not matching svg file found', ->
-			assetsFiles = ["./test/assets/fake.svg"]
-			path = './test/templates/template.html'
+			templateContent = '<div></div>'
+
+			stubRead.withArgs('test/mytemplate.html', 'file').returns templateContent
+
 			call = svgAssets.findAndReplace path, assetsFiles
-			originalFile = fs.readFileSync path, 'UTF-8'
 
-			expect(call).to.equal originalFile
+			# template should be read
+			expect(stubRead.callCount).to.equal 1
+			# final directory should exist or be created
+			expect(spyCreateDir.callCount).to.equal 0
+			# final file shouldn't be written
+			expect(stubWrite.callCount).to.equal 0
+			# File content shouldn't be processed
+			expect(call).to.equal templateContent
+
 
 	return

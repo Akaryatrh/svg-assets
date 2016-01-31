@@ -20,17 +20,89 @@ module.exports = run: ->
 	describe '@constructor', ->
 
 		it 'should have created an instance of the SharedObjects', ->
-			expect(sharedObjects).to.be.an 'object'
-			expect(sharedObjects).to.be.an.instanceof SharedObjects
+			expect(optionsManager.shared).to.be.an 'object'
+			expect(optionsManager.shared).to.be.an.instanceof SharedObjects
 
 
 		it 'should have registered a shared logs object', ->
 			sharedLogs = sharedObjects.logs()
-			expect(sharedLogs).to.be.an 'object'
+			expect(optionsManager.shared.logs).to.be.an 'object'
+			expect(optionsManager.shared.logs).to.deep.equal sharedLogs
 
 		it 'should have registered a shared options object', ->
 			sharedOptions = sharedObjects.defaultOptions()
-			expect(sharedOptions).to.be.an 'object'
+			expect(optionsManager.shared.options).to.be.an 'object'
+			expect(optionsManager.shared.options).to.deep.equal sharedOptions
+
+	describe 'init', ->
+
+		it 'should be a function', ->
+			expect(optionsManager.init).to.be.a 'function'
+
+		it 'should keep default options for shared options when no options given', ->
+			optionsManager.init()
+			defautOptions = sharedObjects.defaultOptions()
+			expect(optionsManager.shared.options).to.deep.equal defautOptions
+
+		it 'should push warn log about default options when no options given', ->
+			warn = ["No options found -> defaults options have been used instead"]
+			optionsManager.init()
+			expect(optionsManager.shared.logs.warnings).to.include.members warn
+
+		it 'should assign new options to shared options', ->
+			options =
+				directory: 'test',
+				templatesExt: [ 'html' ],
+				assets: 'test'
+				assetsExt: [ 'svg' ]
+				logLevels: [ 'warning']
+				preserveRoot: true
+			optionsManager.init(options)
+			expect(optionsManager.shared.options).to.deep.equal options
+
+		it 'should push error log about directory option when not specified with preserve-root option set to true', ->
+			error = ["No directory specified -> processing aborted"]
+			optionsManager.init()
+			expect(optionsManager.shared.logs.errors.globalMessages).to.include.members error
+
+		it """
+			should push warn log about directory option when not specified with preserve-root option set to false
+				and set predefined options for directory
+			""", ->
+			warn = ["No directory specified -> the root of your project has been used to find <svga> tags"]
+			options =
+				preserveRoot: false
+			defaultDirectory = sharedObjects.optionsDefinitions.directory.defaultValue
+			optionsManager.init options
+			expect(optionsManager.shared.logs.warnings).to.include.members warn
+			expect(optionsManager.shared.options.directory).to.equal defaultDirectory
+
+		it 'should push error log about assets directory option when not specified with preserve-root option set to true', ->
+			options =
+				directory: 'test'
+			error = ["No assets folder specified -> processing aborted"]
+			optionsManager.init(options)
+			expect(optionsManager.shared.logs.errors.globalMessages).to.include.members error
+
+		it """
+			should push warn log about assets directory option when not specified with preserve-root option set to false
+				and set predefined options for assets directory
+			""", ->
+			warn = ["No assets folder specified -> the root of your project has been used to find matching files"]
+			options =
+				preserveRoot: false
+			defaultAssets = sharedObjects.optionsDefinitions.assets.defaultValue
+			optionsManager.init options
+			expect(optionsManager.shared.logs.warnings).to.include.members warn
+			expect(optionsManager.shared.options.assets).to.equal defaultAssets
+
+		it 'should push warning log about output directory option when not specified', ->
+			options =
+				directory: 'test'
+				assets: 'test'
+			warn = ["No output directory specified -> template source files will be replaced"]
+			optionsManager.init(options)
+			expect(optionsManager.shared.logs.warnings).to.include.members warn
 
 
 	describe '@returnOptionsAndWarning', ->
@@ -97,7 +169,7 @@ module.exports = run: ->
 		it should return default values and warn user', ->
 			option = 'logLevels'
 			overrideOptions =
-				logLevels: ['unknown']
+				logLevels: 'unknown'
 			optionsManager.shared.options = overrideOptions
 			spy = sinon.spy(optionsManager, 'returnOptionsAndWarning')
 			returnedValues = ['warning', 'error', 'info']
@@ -130,9 +202,6 @@ module.exports = run: ->
 			optionsManager.shared.options = {}
 			returnedValues = ['warning', 'error', 'info']
 			expect(optionsManager.checkOptionsWithDefaults(option)).to.deep.members returnedValues
-
-
-	# TODO describe '@init', ->
 
 
 	return
