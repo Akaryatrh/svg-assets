@@ -17,6 +17,8 @@ Using **svg** in a project is great for many reasons (scalable size, all element
 That's where **svg-assets** comes to the rescue !
 It'll parse any template file to find `<svga>` tags and replace them with related assets files.
 
+Let's say you have a file called `my-pretty-chart.svg` located in your `/path-of-your-assets` folder.
+Now you can add a new tag `<svga>my-pretty-chart.svg</svga>` in one of your template file and **svg-assets** will find and replace it with the orginal `svg` file. That way, you don't need to pollute your template files with svg sources.
 
 
 ## Installation
@@ -27,7 +29,7 @@ Installing globally will give you access to the `svg-assets` command anywhere on
 npm install -g svg-assets
 ```
 
-## Usage
+## Options
 ------------------
 
 svg-assets comes with a few **options**. These options will be used by default (except `directory` and `assets`), and any of them will be replaced by defined ones.

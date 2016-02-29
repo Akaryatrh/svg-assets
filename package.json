@@ -6,6 +6,7 @@
 	"homepage": "https://github.com/Akaryatrh/svg-assets",
 	"bugs": "https://github.com/Akaryatrh/svgAssets/issues",
 	"keywords": [ "svg", "replace", "file" ],
+	"preferGlobal": true,
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Akaryatrh/svg-assets"
