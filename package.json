@@ -35,12 +35,12 @@
 	"devDependencies": {
 		"coffee-script": "1.10.x",
 		"coffeelint": "1.14.x",
-		"mocha": "2.1.x",
+		"mocha": "3.0.x",
 		"coffee-coverage": "1.0.x",
 		"istanbul": "0.4.x",
 		"coveralls": "2.11.x",
-		"chai": "1.10.x",
-		"sinon": "1.12.x",
+		"chai": "3.5.x",
+		"sinon": "1.17.x",
 		"grunt": "0.4.x",
 		"grunt-cli": "0.1.x"
 	}

@@ -145,10 +145,11 @@ module.exports = run: ->
 				logs:
 					errors:
 						globalMessages: []
-			err = ["Error: ENOENT, no such file or directory './test/assets/fake.svg'"]
 
 			expect(svgAssets.rfds(path, 'file')).to.be.null
-			expect(svgAssets.shared.logs.errors.globalMessages).to.deep.members err
+			expect(svgAssets.shared.logs.errors.globalMessages[0]).to.match /ENOENT/
+			expect(svgAssets.shared.logs.errors.globalMessages[0]).to.match /\.\/test\/assets\/fake.svg/
+			expect(svgAssets.shared.logs.errors.globalMessages).to.have.lengthOf(1)
 
 
 	describe '@checkIfDir', ->
@@ -173,7 +174,9 @@ module.exports = run: ->
 			err = ["Error: ENOENT, no such file or directory './fake_folder/'"]
 
 			expect(svgAssets.checkIfDir(path)).to.be.null
-			expect(svgAssets.shared.logs.errors.globalMessages).to.deep.members err
+			expect(svgAssets.shared.logs.errors.globalMessages[0]).to.match /ENOENT/
+			expect(svgAssets.shared.logs.errors.globalMessages[0]).to.match /\.\/fake_folder/
+			expect(svgAssets.shared.logs.errors.globalMessages).to.have.lengthOf(1)
 
 
 
