@@ -22,14 +22,13 @@ module.exports = class OptionsManager
 		else
 			@shared.logs.warnings.push "No options found -> defaults options have been used instead"
 
-
 		@shared.options.logLevels = @checkOptionsWithDefaults 'logLevels'
 		@shared.options.templatesExt = @checkOptionsWithDefaults 'templatesExt', true
 		@shared.options.assetsExt = @checkOptionsWithDefaults 'assetsExt', true
 		# deactivated for now --> @shared.options.matchTags = @checkOptionsWithDefaults 'matchTags'
 		@shared.options.preserveRoot ?= @shared.defaultOptions.preserveRoot
 
-		unless @shared.options.directory
+		unless @shared.options.directory and typeof @shared.options.directory is 'string'
 			prefix = 'No directory specified -> '
 			if @shared.options.preserveRoot
 				@shared.logs.errors.globalMessages.push "#{ prefix }processing aborted"
@@ -40,7 +39,7 @@ module.exports = class OptionsManager
 				@shared.logs.warnings.push "#{prefix}the root of your project has been used to find <svga> tags"
 
 
-		unless @shared.options.assets
+		unless @shared.options.assets and typeof @shared.options.assets is 'string'
 			prefix = 'No assets folder specified -> '
 			if @shared.options.preserveRoot
 				@shared.logs.errors.globalMessages.push "#{ prefix }processing aborted"
@@ -51,7 +50,7 @@ module.exports = class OptionsManager
 				@shared.logs.warnings.push "#{prefix}the root of your project has been used to find matching files"
 
 
-		unless @shared.options.outputDirectory
+		unless @shared.options.outputDirectory and typeof @shared.options.outputDirectory is 'string'
 			@shared.logs.warnings.push """
 			  No output directory specified -> template source files will be replaced
 			"""
@@ -61,43 +60,58 @@ module.exports = class OptionsManager
 
 
 	#Check validity of specific options towards default ones
-	checkOptionsWithDefaults : (options, acceptAny) ->
-		switch
+	checkOptionsWithDefaults : (option, acceptAny) ->
+
+		sharedOptions = @shared.options[option]
+		defaultOptions = @shared.defaultOptions[option]
+		optionIsString = typeof sharedOptions is 'string'
+		optionIsBoolean = typeof sharedOptions is 'boolean'
+		optionIsNumber = !isNaN parseFloat(sharedOptions) and isFinite sharedOptions
+		optionIsArray = Array.isArray sharedOptions
+		defaultOptionIsArray = Array.isArray defaultOptions
+		optionsToMatch = if optionIsString then [sharedOptions] else sharedOptions
+		arrayValuesMatch = @checkArrayMatch optionsToMatch, defaultOptions
+
+		switch true
 			# is a string and accept any value
-			when typeof @shared.options[options] is 'string' and acceptAny
-			then [@shared.options[options]]
+			when optionIsString and acceptAny
+			then optionsToMatch
 
 			# is a string and part of authorized values
-			when typeof @shared.options[options] is 'string' and
-			@checkArrayMatch([@shared.options[options]], @shared.defaultOptions[options])
-			then [@shared.options[options]]
+			when optionIsString and arrayValuesMatch
+			then optionsToMatch
 
 			# is a string but not part of authorized values
-			when typeof @shared.options[options] is 'string' and
-			!@checkArrayMatch(@shared.options[options], @shared.defaultOptions[options])
-			then @returnOptionsAndWarning options
+			when optionIsString and !arrayValuesMatch
+			then @returnOptionsAndWarning option
 
 			# is a an array and accept any values
-			when Array.isArray(@shared.options[options]) and acceptAny
-			then @shared.options[options]
+			when optionIsArray and acceptAny
+			then sharedOptions
 
 			# is a an array but no values part of authorized values
-			when Array.isArray(@shared.options[options]) and
-			!@checkArrayMatch(@shared.options[options], @shared.defaultOptions[options])
-			then @returnOptionsAndWarning options
+			when optionIsArray and !arrayValuesMatch
+			then @returnOptionsAndWarning option
 
-			when !@shared.options[options]?
-			then @shared.defaultOptions[options]
+			# is boolean or numeric value but an array is expected
+			when (optionIsBoolean or optionIsNumber) and defaultOptionIsArray and !arrayValuesMatch
+				@returnOptionsAndWarning option
 
-			else @shared.options[options]
+			when !sharedOptions?
+				defaultOptions
+
+			else
+				sharedOptions
 
 
 	#loop for values in array and check that all values matches
 	checkArrayMatch : (values, matches) ->
 		check = false
+		if !values?.length
+			return check
 		for value in values
 			check = true if matches.indexOf(value) > -1
-		check
+		return check
 
 	# Warn and return defaults options
 	returnOptionsAndWarning : (options) ->
