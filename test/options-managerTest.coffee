@@ -138,6 +138,11 @@ module.exports = run: ->
 			defaultOptions = ['preserveRoot']
 			expect(optionsManager.checkArrayMatch(options, defaultOptions)).to.equal false
 
+		it 'should return false when option provided is not an array', ->
+			options = true
+			defaultOptions = ['preserveRoot']
+			expect(optionsManager.checkArrayMatch(options, defaultOptions)).to.equal false
+
 
 	describe '@checkOptionsWithDefaults', ->
 
@@ -200,6 +205,24 @@ module.exports = run: ->
 		it should return default values', ->
 			option = 'logLevels'
 			optionsManager.shared.options = {}
+			returnedValues = ['warning', 'error', 'info']
+			expect(optionsManager.checkOptionsWithDefaults(option)).to.deep.members returnedValues
+
+		it 'when option has a boolean value but shouldn\'t,
+		it should return default values instead', ->
+			option = 'logLevels'
+			optionsManager.shared.options = {
+				logLevels: false
+			}
+			returnedValues = ['warning', 'error', 'info']
+			expect(optionsManager.checkOptionsWithDefaults(option)).to.deep.members returnedValues
+
+		it 'when option has a numeric value but shouldn\'t,
+		it should return default values instead', ->
+			option = 'logLevels'
+			optionsManager.shared.options = {
+				logLevels: 1.5
+			}
 			returnedValues = ['warning', 'error', 'info']
 			expect(optionsManager.checkOptionsWithDefaults(option)).to.deep.members returnedValues
 

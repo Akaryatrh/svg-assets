@@ -52,17 +52,17 @@ module.exports = class Logger
 		### OUTPUT ###
 
 		# Warning log
-		if @shared.options?.logLevels.indexOf("warning") > -1
+		if @shared.options?.logLevels?.indexOf("warning") > -1
 			for warning in @shared.logs.warnings
 				logOutput += @coloringOutput 'warning', warning
 
 		# Info log
-		if @shared.options?.logLevels.indexOf("info") > -1
+		if @shared.options?.logLevels?.indexOf("info") > -1
 			for info in @shared.logs.infos
 				logOutput += @coloringOutput 'info', info
 
 		# Global error log
-		if @shared.options?.logLevels.indexOf("error") > -1
+		if @shared.options?.logLevels?.indexOf("error") > -1
 			for error in @shared.logs.errors.globalMessages
 				logOutput += @coloringOutput 'error', error
 
